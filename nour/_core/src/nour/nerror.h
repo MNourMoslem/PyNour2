@@ -5,7 +5,7 @@
 
 extern NError __NR_NERROR_GLOBAL_ERROR_VAR__;
 
-NR_INPUPLIC int 
+NR_PRIVATE int 
 NError_IsError(){
     return __NR_NERROR_GLOBAL_ERROR_VAR__.type != NError_NoError;
 }
@@ -19,51 +19,51 @@ NError_RaiseErrorNoContext(NError_Type type);
 NR_PUPLIC void 
 NError_Print();
 
-NR_INPUPLIC void* NError_RaiseMemoryError() {
+NR_PRIVATE void* NError_RaiseMemoryError() {
     return NError_RaiseErrorNoContext(NError_MemoryError);
 }
 
-NR_INPUPLIC void* NError_RaiseTypeError() {
+NR_PRIVATE void* NError_RaiseTypeError() {
     return NError_RaiseErrorNoContext(NError_TypeError);
 }
 
-NR_INPUPLIC void* NError_RaiseIndexError() {
+NR_PRIVATE void* NError_RaiseIndexError() {
     return NError_RaiseErrorNoContext(NError_IndexError);
 }
 
-NR_INPUPLIC void* NError_RaiseValueError() {
+NR_PRIVATE void* NError_RaiseValueError() {
     return NError_RaiseErrorNoContext(NError_ValueError);
 }
 
-NR_INPUPLIC void* NError_RaiseIOError() {
+NR_PRIVATE void* NError_RaiseIOError() {
     return NError_RaiseErrorNoContext(NError_IOError);
 }
 
-NR_INPUPLIC void* NError_RaiseZeroDivisionError() {
+NR_PRIVATE void* NError_RaiseZeroDivisionError() {
     return NError_RaiseErrorNoContext(NError_ZeroDivisionError);
 }
 
-NR_INPUPLIC void* NError_RaiseImportError() {
+NR_PRIVATE void* NError_RaiseImportError() {
     return NError_RaiseErrorNoContext(NError_ImportError);
 }
 
-NR_INPUPLIC void* NError_RaiseAttributeError() {
+NR_PRIVATE void* NError_RaiseAttributeError() {
     return NError_RaiseErrorNoContext(NError_AttributeError);
 }
 
-NR_INPUPLIC void* NError_RaiseKeyError() {
+NR_PRIVATE void* NError_RaiseKeyError() {
     return NError_RaiseErrorNoContext(NError_KeyError);
 }
 
-NR_INPUPLIC void* NError_RaiseAssertionError() {
+NR_PRIVATE void* NError_RaiseAssertionError() {
     return NError_RaiseErrorNoContext(NError_AssertionError);
 }
 
-NR_INPUPLIC void* NError_RaiseRuntimeError() {
+NR_PRIVATE void* NError_RaiseRuntimeError() {
     return NError_RaiseErrorNoContext(NError_RuntimeError);
 }
 
-NR_INPUPLIC void* NError_RaiseOverflowError() {
+NR_PRIVATE void* NError_RaiseOverflowError() {
     return NError_RaiseErrorNoContext(NError_OverflowError);
 }
 

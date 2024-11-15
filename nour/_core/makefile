@@ -1,21 +1,36 @@
+# Compiler and Flags
 CC = gcc
-CFLAGS = -I./include/
+CFLAGS = -I./include -Wall -Wextra -g
 
+# Directories
 SRC_NOUR_DIR = ./src/nour
-INCLUDE_NOUR_DIR = ./inlcude/nour
+INCLUDE_NOUR_DIR = ./include/nour
 BUILD_DIR = $(SRC_NOUR_DIR)/build
 OBJ_DIR = $(BUILD_DIR)/obj
 LIB_DIR = $(BUILD_DIR)/lib
 
-all : make_dir compile_src
+# Source and Object Files
+SRC_FILES = $(wildcard $(SRC_NOUR_DIR)/*.c)
+OBJ_FILES = $(patsubst $(SRC_NOUR_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
-OBJ_OFILES = $(wildcard $(OBJ_NOUR_DIR)/*.o)
+# Library Name
+LIB_NAME = libnour.a
 
-make_dir: 
+# Targets
+all: make_dir $(LIB_DIR)/$(LIB_NAME)
+
+# Ensure necessary directories exist
+make_dir:
 	mkdir -p $(BUILD_DIR) $(OBJ_DIR) $(LIB_DIR)
 
-compile_src:
-	$(CC) $(CFLAGS) $(SRC_NOUR_DIR)/*.c -o $(OBJ_DIR)
+# Compile source files into object files
+$(OBJ_DIR)/%.o: $(SRC_NOUR_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
+# Build the static library
+$(LIB_DIR)/$(LIB_NAME): $(OBJ_FILES)
+	ar rcs $@ $^
+
+# Clean build directories
 clean:
 	rm -rf $(BUILD_DIR)

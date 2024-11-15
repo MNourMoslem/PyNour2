@@ -25,6 +25,8 @@ _Node_NewInit(int ndim, NR_DTYPE dtype){
     node->flags = 0;
     node->op = NULL;
     node->prefix = NULL;
+
+    return node;
 }
 
 NR_PRIVATE nr_size_t
@@ -33,7 +35,7 @@ _Node_NewInitShapeAndStrides(Node* node, nr_size_t* shape){
     node->shape = malloc(len);
     if (!node->shape){
         NError_RaiseMemoryError();
-        return -1;
+        return 0;
     }
     memcpy(node->shape, shape, len);
 
@@ -41,7 +43,7 @@ _Node_NewInitShapeAndStrides(Node* node, nr_size_t* shape){
     if (!node->strides){
         free(node->shape);
         NError_RaiseMemoryError();
-        return -1;
+        return 0;
     }
 
     nr_size_t nitems = 1;
@@ -73,7 +75,7 @@ Node_New(void* data_block, int copy_data, int ndim, nr_size_t* shape, NR_DTYPE d
     }
 
     nr_size_t nitems = _Node_NewInitShapeAndStrides(node, shape);
-    if (nitems < 0){
+    if (nitems == 0){
         free(node);
         return NULL;
     }

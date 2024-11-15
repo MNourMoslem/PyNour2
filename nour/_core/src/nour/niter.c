@@ -89,20 +89,3 @@ NIter_FromScratch(NIter* niter ,void* data, int ndim, nr_size_t* shape,
         }
     }
 }
-
-NR_INLINE void
-NIter_Iter(NIter* niter){
-    niter->idx = 0;
-    memset(niter->coords, 0, niter->ndim);
-    niter->current = niter->data;
-}
-
-NR_INLINE void*
-NIter_Next(NIter* niter){
-    return niter->next_func(niter);
-}
-
-NR_INLINE void*
-NIter_Item(NIter* niter){
-    return niter->current;
-}

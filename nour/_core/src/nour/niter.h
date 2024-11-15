@@ -17,7 +17,7 @@ typedef struct NIter
 
     void* current;
 
-    int coords[NR_NODE_MAX_NDIM];
+    nr_size_t coords[NR_NODE_MAX_NDIM];
     int idx;
     int end;
     int step;
@@ -33,13 +33,20 @@ NIter_New(NIter* niter, Node* node, int iter_mode);
 NR_PUPLIC void
 NIter_FromScratch(NIter* iter ,void* data, int ndim, nr_size_t* shape, nr_size_t* strides, nr_size_t* prefix, int iter_mode);
 
-NR_INPUPLIC void
-NIter_Iter(NIter* niter);
+NR_INLINE void
+NIter_Iter(NIter* niter){
+    niter->idx = 0;
+    memset(niter->coords, 0, niter->ndim);
+    niter->current = niter->data;
+}
 
-NR_INPUPLIC void*
-NIter_Next(NIter* niter);
+NR_INLINE void*
+NIter_Next(NIter* niter){
+    return niter->next_func(niter);
+}
 
-NR_INPUPLIC void*
-NIter_Item(NIter* niter);
-
+NR_INLINE void*
+NIter_Item(NIter* niter){
+    return niter->current;
+}
 #endif

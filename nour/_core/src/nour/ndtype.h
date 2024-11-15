@@ -5,7 +5,7 @@
 
 extern const nr_size_t __NR_NDTYPE_SIZES__[];
 
-NR_INPUPLIC nr_size_t
+NR_PRIVATE nr_size_t
 NDtype_Size(NR_DTYPE dtype){
     return __NR_NDTYPE_SIZES__[dtype];
 }
