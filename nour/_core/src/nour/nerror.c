@@ -7,7 +7,7 @@ NError __NR_NERROR_GLOBAL_ERROR_VAR__ = {
     .context = ""
 };
 
-NR_PUPLIC void*
+NR_PUBLIC void*
 NError_RaiseError(NError_Type type, const char *format, ...) {
     __NR_NERROR_GLOBAL_ERROR_VAR__.type = type;
 
@@ -21,7 +21,7 @@ NError_RaiseError(NError_Type type, const char *format, ...) {
     return NULL;
 }
 
-NR_PUPLIC void*
+NR_PUBLIC void*
 NError_RaiseErrorNoContext(NError_Type type){
     __NR_NERROR_GLOBAL_ERROR_VAR__.type = type;
     return NULL;
@@ -75,7 +75,7 @@ _NError_TypeAsString(NError_Type type, char* trg_str) {
     }
 }
 
-NR_PUPLIC void
+NR_PUBLIC void
 NError_Print(){
     char type_str[30];
     _NError_TypeAsString(__NR_NERROR_GLOBAL_ERROR_VAR__.type, type_str);

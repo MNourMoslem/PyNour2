@@ -10,13 +10,13 @@ NError_IsError(){
     return __NR_NERROR_GLOBAL_ERROR_VAR__.type != NError_NoError;
 }
 
-NR_PUPLIC void*
+NR_PUBLIC void*
 NError_RaiseError(NError_Type type, const char *format, ...);
 
-NR_PUPLIC void* 
+NR_PUBLIC void* 
 NError_RaiseErrorNoContext(NError_Type type);
 
-NR_PUPLIC void 
+NR_PUBLIC void 
 NError_Print();
 
 NR_PRIVATE void* NError_RaiseMemoryError() {

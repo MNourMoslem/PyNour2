@@ -3,8 +3,7 @@
 
 #include "nour/nour.h"
 
-NR_PUPLIC void
+NR_PUBLIC void
 Node_Free(Node* node);
-
 
 #endif

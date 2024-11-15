@@ -7,7 +7,7 @@ _NIter_Next_Contiguous(NIter* niter){
         niter->current = NULL;
     }
     else{
-        niter->current += niter->step;
+        niter->current = niter->data + niter->step * niter->idx;
     }
     return niter->current;
 }
@@ -48,7 +48,7 @@ _NIter_Next_Child(NIter* niter){
     return NULL;
 }
 
-NR_PUPLIC void
+NR_PUBLIC void
 NIter_New(NIter* niter, Node* node, int iter_mode){
     if (iter_mode == NITER_MODE_NONE){
         if (NODE_IS_CONTIGUOUS(node)){
@@ -63,7 +63,7 @@ NIter_New(NIter* niter, Node* node, int iter_mode){
                      node->shape, node->strides, node->prefix, iter_mode);
 }
 
-NR_PUPLIC void
+NR_PUBLIC void
 NIter_FromScratch(NIter* niter ,void* data, int ndim, nr_size_t* shape,
                  nr_size_t* strides, nr_size_t* prefix, int iter_mode)
 {

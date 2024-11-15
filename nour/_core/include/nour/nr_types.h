@@ -11,6 +11,9 @@
 #define NR_CHKFLG(x, flag) ((x & flag) == flag)
 #define NR_CHKUNI(x, flag) ((x & flag) != 0)
 
+#define NR_MAX(a, b) ((a > b) ? a : b)
+#define NR_MIN(a, b) ((a < b) ? a : b)
+
 #define NR_BOOL_SIZE 1
 #define NR_INT8_SIZE 1
 #define NR_UINT8_SIZE 1

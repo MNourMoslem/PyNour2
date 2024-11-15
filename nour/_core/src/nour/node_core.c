@@ -67,7 +67,7 @@ _Node_NewInitAndCopyData(Node* node, void* data, nr_size_t nitems){
     return 0;
 }
 
-NR_PUPLIC Node*
+NR_PUBLIC Node*
 Node_New(void* data_block, int copy_data, int ndim, nr_size_t* shape, NR_DTYPE dtype){
     Node* node = _Node_NewInit(ndim, dtype);
     if (!node){
