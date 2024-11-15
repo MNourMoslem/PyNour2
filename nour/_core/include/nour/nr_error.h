@@ -27,6 +27,4 @@ typedef struct
     char context[NERROR_MAX_STRING_LEN];
 }NError;
 
-static NError __NR_NERROR_GLOBAL_ERROR_VAR__;
-
 #endif

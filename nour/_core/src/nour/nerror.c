@@ -1,15 +1,11 @@
 #include "./nerror.h"
 #include <stdio.h>
+#include <stdarg.h>
 
 NError __NR_NERROR_GLOBAL_ERROR_VAR__ = {
     .type = NError_NoError,
     .context = ""
 };
-
-NR_INLINE int
-NError_IsError(){
-    return __NR_NERROR_GLOBAL_ERROR_VAR__.type != NError_NoError;
-}
 
 NR_PUPLIC void*
 NError_RaiseError(NError_Type type, const char *format, ...) {

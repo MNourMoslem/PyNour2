@@ -33,10 +33,13 @@ NIter_New(NIter* niter, Node* node, int iter_mode);
 NR_PUPLIC void
 NIter_FromScratch(NIter* iter ,void* data, int ndim, nr_size_t* shape, nr_size_t* strides, nr_size_t* prefix, int iter_mode);
 
-NR_INLINE void
+NR_INPUPLIC void
 NIter_Iter(NIter* niter);
 
-NR_INLINE void
+NR_INPUPLIC void*
 NIter_Next(NIter* niter);
+
+NR_INPUPLIC void*
+NIter_Item(NIter* niter);
 
 #endif

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "nerror.h": "c"
+        "nerror.h": "c",
+        "ndtype.h": "c"
     }
 }

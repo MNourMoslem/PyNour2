@@ -1,10 +1,9 @@
-#include "node_core.h"
-#include "./nerror.h"
-#include "./ndtype.h"
-#include "./free.h"
-
 #include <string.h>
 
+#include "node_core.h"
+#include "nerror.h"
+#include "ndtype.h"
+#include "free.h"
 
 NR_PRIVATE Node*
 _Node_NewInit(int ndim, NR_DTYPE dtype){

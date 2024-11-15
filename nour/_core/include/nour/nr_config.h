@@ -34,7 +34,7 @@
     #define NR_UNIX 0
 #endif
 
-// Macro for Static Inline Functions
+
 #define NR_STATIC static
 #define NR_STATIC_INLINE NR_STATIC NR_INLINE
 #define NR_STATIC_FINLINE NR_STATIC NR_FINLINE
@@ -42,7 +42,10 @@
 #define NR_HIDDEN NR_STATIC
 #define NR_PRIVATE NR_STATIC_INLINE
 #define NR_FPRIVATE NR_STATIC_FINLINE
-#define NR_PUPLIC
+
+#define NR_PUPLIC NR_STATIC
+#define NR_INPUPLIC NR_STATIC_INLINE
+#define NR_FINPUPLIC NR_STATIC_FINLINE
 
 #define NR_NULL ((void*)0)
 

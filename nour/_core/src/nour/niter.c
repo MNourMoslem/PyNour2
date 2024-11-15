@@ -16,7 +16,7 @@ NR_PRIVATE void*
 _NIter_Next_Strided(NIter* niter){
     if (niter->current){
         for (int i = niter->ndim-1; i > -1; i--){
-            niter->current = niter->strides[i] * niter->coords[i];
+            niter->current = niter->data + (niter->strides[i] * niter->coords[i]);
             niter->coords[i]++;
             if (niter->coords[i] >= niter->shape[i]){
                 niter->coords[i] = 0;
@@ -34,7 +34,7 @@ NR_PRIVATE void*
 _NIter_Next_Child(NIter* niter){
     if (niter->current){
         for (int i = niter->ndim-1; i > -1; i--){
-            niter->current = niter->strides[i] * (niter->coords[i] + niter->prefix[i]);
+            niter->current = niter->data + (niter->strides[i] * (niter->coords[i] + niter->prefix[i]));
             niter->coords[i]++;
             if (niter->coords[i] >= niter->shape[i]){
                 niter->coords[i] = 0;
@@ -97,12 +97,12 @@ NIter_Iter(NIter* niter){
     niter->current = niter->data;
 }
 
-NR_INLINE void
+NR_INLINE void*
 NIter_Next(NIter* niter){
     return niter->next_func(niter);
 }
 
-NR_INLINE void
+NR_INLINE void*
 NIter_Item(NIter* niter){
     return niter->current;
 }
