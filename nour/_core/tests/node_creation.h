@@ -8,7 +8,7 @@
 #include "../src/nour/free.h"
 #include <stdio.h>
 
-static int test_1(){
+static int test_node_creation_1(){
     nr_int arr[] = {1, 2, 3, 4, 5, 6};
     nr_size_t shape[] = {2, 3};
     int ndim = 2;
@@ -22,15 +22,21 @@ static int test_1(){
     NIter iter;
     NIter* piter = &iter;
 
-    NIter_New(piter, node, NITER_MODE_NONE);
+    NIter_FromNode(piter, node, NITER_MODE_STRIDED);
 
-    NIter_Iter(piter);
+    NIter_ITER(piter);
 
-    while (NIter_Next(piter))
+    int i = 0;
+    if (!NIter_NOTDONE(piter)){
+        return -1;
+    }
+
+    while (NIter_NOTDONE(piter))
     {
-        if (*(nr_int*)NIter_Item(piter) != arr[iter.idx]){
+        if (*(nr_int*)NIter_ITEM(piter) != arr[i++]){
             return -1;
         }
+        NIter_NEXT(piter);
     }
 
     Node_Free(node);
@@ -41,7 +47,7 @@ static int test_1(){
 void test_node_creation(){
     NTEST_RUN_TEST("Node Creation",
     {
-        NTEST_ONE_TEST(1, test_1);
+        NTEST_ONE_TEST(1, test_node_creation_1);
     }
     )
 }
