@@ -8,5 +8,6 @@
 #include "nr_func.h"
 #include "nr_error.h"
 #include "asstring.h"
+#include "nr_iter.h"
 
 #endif
