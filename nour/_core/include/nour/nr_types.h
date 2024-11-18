@@ -66,6 +66,13 @@ typedef unsigned char nr_bool;
 #define NR_FALSE 0
 #define NR_TRUE 0
 
+#define NR_32ONES  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+#define NR_32ZEROS {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+#define NR_32LIKE(n) {n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, \
+                      n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n}
+
 NR_PRIVATE int
 NR_IsSameShape(nr_size_t* shape_a, nr_size_t* shape_b, int ndim){
     return memcmp(shape_a, shape_b, sizeof(nr_size_t) * ndim) == 0;
