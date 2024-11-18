@@ -14,7 +14,7 @@ NTools_ShapeAsString(nr_size_t* shape, int ndim, char str[]) {
     int current = 1;
 
     for (int i = 0; i < ndim; i++) {
-        int len = snprintf(str + current, 20, "%lu", shape[i]);
+        int len = snprintf(str + current, 20, "%llu", shape[i]);
         current += len;
 
         if (i < ndim - 1) {
@@ -22,7 +22,7 @@ NTools_ShapeAsString(nr_size_t* shape, int ndim, char str[]) {
             str[current++] = ' ';
         }
     }
-    
+
     str[current++] = ')';
     str[current] = '\0';
 }
