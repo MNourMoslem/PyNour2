@@ -36,6 +36,19 @@ NTEST_TAIL
                             __dtype);                    \
     } while (0)
 
+#define _NEW_NODE_2x2_INT32(node_ptr)                    \
+    do {                                                 \
+        nr_int32 __arr[] = {1, 2,                        \
+                            3, 4};                       \
+        nr_size_t __shape[] = {2, 2};                    \
+        int __ndim = 2;                                  \
+        NR_DTYPE __dtype = NR_INT32;                     \
+        node_ptr = Node_New(__arr, 1,                    \
+                            __ndim,                      \
+                            __shape,                     \
+                            __dtype);                    \
+    } while (0)
+
 #define _NEW_NODE_3x3_BOOL(node_ptr)                     \
     do {                                                 \
         nr_bool __arr[] = {1, 0, 1,                      \
