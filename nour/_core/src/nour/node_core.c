@@ -1,8 +1,6 @@
 #include <string.h>
 
 #include "node_core.h"
-#include "nerror.h"
-#include "ndtype.h"
 #include "free.h"
 
 NR_PRIVATE Node*
@@ -24,7 +22,6 @@ _Node_NewInit(int ndim, NR_DTYPE dtype){
     node->base = NULL;
     node->flags = 0;
     node->op = NULL;
-    node->prefix = NULL;
 
     return node;
 }
