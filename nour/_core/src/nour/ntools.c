@@ -20,4 +20,6 @@ NTools_BroadcastStrides(nr_size_t* a_shape, int a_ndim,
             return -1;
         }
     }
+
+    return 0;
 }
