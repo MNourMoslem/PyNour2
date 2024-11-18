@@ -1,3 +1,4 @@
 *.o
+*.exe
 
 nour/_core/src/nour/build
