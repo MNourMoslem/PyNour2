@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "nerror.h": "c",
-        "ndtype.h": "c"
+        "ndtype.h": "c",
+        "niter.h": "c",
+        "type_traits": "cpp",
+        "compare": "cpp"
     }
 }
