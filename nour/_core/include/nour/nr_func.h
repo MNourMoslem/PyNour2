@@ -5,10 +5,11 @@
 
 typedef struct
 {
-    Node** narrays;
+    Node** nodes;
     Node* out;
-    int n_arr;
+    int n_nodes;
     int dim;
+    void* extra;
 }NFuncArgs;
 
 typedef void (*NFunc) (NFuncArgs*);
