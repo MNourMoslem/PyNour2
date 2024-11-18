@@ -1,3 +1,6 @@
+#ifndef NOUR__CORE_SRC_NOUR_TESTS_NITERS_H
+#define NOUR__CORE_SRC_NOUR_TESTS_NITERS_H
+
 #include "common.h"
 #include "nour/nour.h"
 #include "../src/nour/niter.h"
@@ -263,3 +266,6 @@ void test_niters(){
     }
     )
 }
+
+
+#endif
