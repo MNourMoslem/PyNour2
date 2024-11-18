@@ -3,6 +3,7 @@
 
 #include "nr_types.h"
 #include "nr_dtypes.h"
+#include <string.h>
 
 typedef enum
 {
@@ -54,13 +55,19 @@ typedef struct
 #define NODE_IS_SORTED(node) NR_CHKFLG(node->flags, NR_NODE_SORTED)
 #define NODE_IS_OWNDATA(node) NR_CHKFLG(node->flags, NR_NODE_OWNDATA)
 
-NR_PRIVATE nr_size_t
-Node_NItems(const int ndim, const nr_size_t* shape){
+NR_STATIC_INLINE nr_size_t
+Node_NItems(const Node* node){
     nr_size_t nitems = 1;
-    for (int i = 0; i < ndim; i++){
-        nitems *= shape[i];
+    for (int i = 0; i < node->ndim; i++){
+        nitems *= node->shape[i];
     }
     return nitems;
+}
+
+NR_STATIC_INLINE int
+Node_SameShape(const Node* a, const Node* b){
+    return a->ndim == b->ndim 
+            && memcmp(a->shape, b->shape, sizeof(nr_size_t) * a->ndim) == 0;
 }
 
 #endif

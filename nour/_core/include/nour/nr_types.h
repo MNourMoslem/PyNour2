@@ -73,9 +73,13 @@ typedef unsigned char nr_bool;
 #define NR_32LIKE(n) {n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, \
                       n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n}
 
-NR_PRIVATE int
-NR_IsSameShape(nr_size_t* shape_a, nr_size_t* shape_b, int ndim){
-    return memcmp(shape_a, shape_b, sizeof(nr_size_t) * ndim) == 0;
+NR_STATIC_INLINE nr_size_t
+NR_NItems(int ndim, nr_size_t* shape){
+    nr_size_t nitems = 1;
+    for (int i = 0; i < ndim; i++){
+        nitems *= shape[i];
+    }
+    return nitems;
 }
 
 #endif
