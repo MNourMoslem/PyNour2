@@ -47,7 +47,7 @@ typedef struct
 
 #define NODE_IS_C_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_C_ORDER)
 #define NODE_IS_F_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_F_ORDER)
-#define NODE_IS_CONTIGUOUS(node) NR_CHKUNI(node->flags, NR_NODE_CONTIGUOUS)
+#define NODE_IS_CONTIGUOUS(node) NR_CHKFLG(node->flags, NR_NODE_CONTIGUOUS)
 #define NODE_IS_STRIDED(node) NR_CHKFLG(node->flags, NR_NODE_STRIDED)
 #define NODE_IS_CHILD(node) NR_CHKFLG(node->flags, NR_NODE_CHILD)
 #define NODE_IS_WRITABLE(node) NR_CHKFLG(node->flags, NR_NODE_WRITABLE)
