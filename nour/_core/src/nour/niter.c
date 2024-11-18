@@ -27,7 +27,7 @@ NIter_New(NIter* niter ,void* data, int ndim, nr_size_t* shape,
         niter->backstrides[i] = strides[i] * niter->shape_m1[i];
     }
 
-    niter->end = Node_NItems(ndim, shape);
+    niter->end = NR_NItems(ndim, shape);
     niter->idx = niter->end;
     niter->step = niter->strides[niter->nd_m1];
     niter->iter_mode = iter_mode;
@@ -99,7 +99,7 @@ NMultiIter_New(Node** nodes, int n_nodes, NMultiIter* mit){
         NIter_New(mit->iters + i, node->data, node->ndim, mit->out_shape, tmp_str, tmp);
     }
 
-    mit->end = (int)Node_NItems(mit->out_ndim, mit->out_shape);
+    mit->end = (int)NR_NItems(mit->out_ndim, mit->out_shape);
     mit->n_iter = n_nodes;
 
     return 0;
@@ -164,7 +164,7 @@ NWindowIter_New(Node* node, NWindowIter* wit, nr_size_t* window_dims,
     }
 
     wit->idx = wit->end;
-    wit->wend = Node_NItems(node->ndim, window_dims);
+    wit->wend = NR_NItems(node->ndim, window_dims);
     wit->widx = wit->wend;
     wit->iter_mode =  NITER_MODE_STRIDED;
 
