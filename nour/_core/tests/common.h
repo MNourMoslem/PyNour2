@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+typedef int (*TestFunc) ();
+
 #define NTEST_HEAD(test_name)\
 printf("===========================\n");\
 printf(test_name);\
