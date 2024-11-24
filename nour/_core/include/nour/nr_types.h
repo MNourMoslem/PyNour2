@@ -74,7 +74,7 @@ typedef unsigned char nr_bool;
                       n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n}
 
 NR_STATIC_INLINE nr_size_t
-NR_NItems(int ndim, nr_size_t* shape){
+NR_NItems(int ndim, const nr_size_t* shape){
     nr_size_t nitems = 1;
     for (int i = 0; i < ndim; i++){
         nitems *= shape[i];
