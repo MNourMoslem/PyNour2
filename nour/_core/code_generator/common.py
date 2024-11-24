@@ -73,7 +73,7 @@ dtype2nr_type = {
 }
 
 THIS_DIR = os.path.dirname(__file__)
-SRC_DIR = os.path.join(THIS_DIR, "..")
+SRC_DIR = os.path.join(THIS_DIR, "../src")
 SRC_NOUR_DIR = os.path.join(SRC_DIR, "nour")
 NMATH_DIR = os.path.join(SRC_DIR, "nmath")
 BUILD_DIR = os.path.join(SRC_NOUR_DIR, "build")
