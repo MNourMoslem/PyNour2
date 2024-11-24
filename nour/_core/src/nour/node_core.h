@@ -3,6 +3,7 @@
 
 #include "nour/nour.h"
 #include "tc_methods.h"
+#include "free.h"
 
 NR_PUBLIC Node*
 Node_New(void* data, int copy_data, int ndim, nr_size_t* shape, NR_DTYPE dtype);
