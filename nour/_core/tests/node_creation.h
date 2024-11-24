@@ -44,10 +44,302 @@ static int test_node_creation_1(){
     return 0;
 }
 
+static int test_node_creation_2(){
+    Node *n1, *n2;
+    _NEW_NODE_4x4_INT32(n1);
+    if (!n1){
+        return -1;
+    }
+
+    n2 = Node_Copy(NULL, n1);
+    if (!n2){
+        Node_Free(n1);
+        return -1;
+    }
+
+    int nitems = (int)Node_NItems(n1);
+    if (nitems == 0){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int res = 0;
+    nr_int32 v1, v2;
+    for (int i = 0; i < nitems; i++){
+        v1 = *((nr_int32*)(n1->data) + i);
+        v2 = *((nr_int32*)(n2->data) + i);
+
+        if (v1 != v2){
+            res = -1;
+            break;
+        }
+    }
+
+    Node_Free(n1);
+    Node_Free(n2);
+
+    return res;
+}
+
+static int test_node_creation_3(){
+    Node *n1, *n2;
+    _NEW_NODE_4x4_INT32(n1);
+    if (!n1){
+        return -1;
+    }
+
+    nr_int32 arr[] = NR_32ONES;
+    nr_size_t shp[] = {4, 4};
+    nr_size_t nd = 2;
+    NR_DTYPE dt = NR_INT32;
+    n2 = Node_New(arr, 1, nd, shp, dt);
+    if (!n2){
+        Node_Free(n1);
+        return -1;
+    }
+
+    Node_Copy(n2, n1);
+    if (!n2){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int nitems = (int)Node_NItems(n1);
+    if (nitems == 0){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int res = 0;
+    nr_int32 v1, v2;
+    for (int i = 0; i < nitems; i++){
+        v1 = *((nr_int32*)(n1->data) + i);
+        v2 = *((nr_int32*)(n2->data) + i);
+
+        if (v1 != v2){
+            res = -1;
+            break;
+        }
+    }
+
+    Node_Free(n1);
+    Node_Free(n2);
+
+    return res;
+}
+
+static int test_node_creation_4(){
+    Node *n1, *n2;
+    _NEW_NODE_4x4_INT32(n1);
+    if (!n1){
+        return -1;
+    }
+
+    nr_int32 arr[] = NR_32ONES;
+    nr_size_t shp[] = {4, 4};
+    nr_size_t nd = 2;
+    NR_DTYPE dt = NR_INT32;
+    n2 = Node_New(arr, 1, nd, shp, dt);
+    if (!n2){
+        Node_Free(n1);
+        return -1;
+    }
+
+    NR_RMVFLG(n1->flags, NR_NODE_CONTIGUOUS);
+
+    Node_Copy(n2, n1);
+    if (!n2){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int nitems = (int)Node_NItems(n1);
+    if (nitems == 0){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int res = 0;
+    nr_int32 v1, v2;
+    for (int i = 0; i < nitems; i++){
+        v1 = *((nr_int32*)(n1->data) + i);
+        v2 = *((nr_int32*)(n2->data) + i);
+
+        if (v1 != v2){
+            res = -1;
+            break;
+        }
+    }
+
+    Node_Free(n1);
+    Node_Free(n2);
+
+    return res;
+}
+
+static int test_node_creation_5(){
+    Node *n1, *n2;
+    _NEW_NODE_4x4_INT32(n1);
+    if (!n1){
+        return -1;
+    }
+
+    nr_int32 arr[] = NR_32ONES;
+    nr_size_t shp[] = {4, 4};
+    nr_size_t nd = 2;
+    NR_DTYPE dt = NR_INT32;
+    n2 = Node_New(arr, 1, nd, shp, dt);
+    if (!n2){
+        Node_Free(n1);
+        return -1;
+    }
+
+    NR_RMVFLG(n2->flags, NR_NODE_CONTIGUOUS);
+
+    Node_Copy(n2, n1);
+    if (!n2){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int nitems = (int)Node_NItems(n1);
+    if (nitems == 0){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int res = 0;
+    nr_int32 v1, v2;
+    for (int i = 0; i < nitems; i++){
+        v1 = *((nr_int32*)(n1->data) + i);
+        v2 = *((nr_int32*)(n2->data) + i);
+
+        if (v1 != v2){
+            res = -1;
+            break;
+        }
+    }
+
+    Node_Free(n1);
+    Node_Free(n2);
+
+    return res;
+}
+
+static int test_node_creation_6(){
+    Node *n1, *n2;
+    _NEW_NODE_4x4_INT32(n1);
+    if (!n1){
+        return -1;
+    }
+
+    nr_int32 arr[] = NR_32ONES;
+    nr_size_t shp[] = {4, 4};
+    nr_size_t nd = 2;
+    NR_DTYPE dt = NR_INT32;
+    n2 = Node_New(arr, 1, nd, shp, dt);
+    if (!n2){
+        Node_Free(n1);
+        return -1;
+    }
+
+    NR_RMVFLG(n1->flags, NR_NODE_CONTIGUOUS);
+    NR_RMVFLG(n2->flags, NR_NODE_CONTIGUOUS);
+
+    Node_Copy(n2, n1);
+    if (!n2){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int nitems = (int)Node_NItems(n1);
+    if (nitems == 0){
+        Node_Free(n1);
+        Node_Free(n2);
+        return -1;
+    }
+
+    int res = 0;
+    nr_int32 v1, v2;
+    for (int i = 0; i < nitems; i++){
+        v1 = *((nr_int32*)(n1->data) + i);
+        v2 = *((nr_int32*)(n2->data) + i);
+
+        if (v1 != v2){
+            res = -1;
+            break;
+        }
+    }
+
+    Node_Free(n1);
+    Node_Free(n2);
+
+    return res;
+}
+
+static int test_node_creation_7(){
+    Node *n1, *n2;
+    _NEW_NODE_4x4_INT32(n1);
+    if (!n1){
+        return -1;
+    }
+
+    nr_int8 arr[] = NR_32ONES;
+    nr_size_t shp[] = {4, 4};
+    nr_size_t nd = 2;
+    NR_DTYPE dt = NR_INT8;
+    n2 = Node_New(arr, 1, nd, shp, dt);
+    if (!n2){
+        Node_Free(n1);
+        return -1;
+    }
+
+    int res = Node_Copy(n2, n1) ? -1 : 0;
+
+    Node_Free(n1);
+    Node_Free(n2);
+    return res;
+}
+
+static int test_node_creation_8(){
+    Node *n1, *n2;
+    _NEW_NODE_4x4_INT32(n1);
+    if (!n1){
+        return -1;
+    }
+
+    _NEW_NODE_2x2_INT32(n2);
+    if (!n2){
+        Node_Free(n1);
+        return -1;
+    }
+
+    int res = Node_Copy(n2, n1) ? -1 : 0;
+
+    Node_Free(n1);
+    Node_Free(n2);
+    return res;
+}
+
 void test_node_creation(){
     NTEST_RUN_TEST("Node Creation",
     {
         NTEST_ONE_TEST(1, test_node_creation_1);
+        NTEST_ONE_TEST(2, test_node_creation_2);
+        NTEST_ONE_TEST(3, test_node_creation_3);
+        NTEST_ONE_TEST(4, test_node_creation_4);
+        NTEST_ONE_TEST(5, test_node_creation_5);
+        NTEST_ONE_TEST(6, test_node_creation_6);
+        NTEST_ONE_TEST(7, test_node_creation_7);
+        NTEST_ONE_TEST(8, test_node_creation_8);
     }
     )
 }
