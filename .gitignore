@@ -2,3 +2,4 @@
 *.exe
 
 nour/_core/src/nour/build
+nour/_core/tests/run.exe
