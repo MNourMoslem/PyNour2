@@ -9,5 +9,6 @@
 #include "nr_error.h"
 #include "asstring.h"
 #include "nr_iter.h"
+#include "nr_math.h"
 
 #endif
