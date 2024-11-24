@@ -4,6 +4,9 @@
         "ndtype.h": "c",
         "niter.h": "c",
         "type_traits": "cpp",
-        "compare": "cpp"
+        "compare": "cpp",
+        "random": "c",
+        "cmath": "cpp",
+        "__nmath_generated.c": "cpp"
     }
 }
