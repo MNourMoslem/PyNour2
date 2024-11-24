@@ -12,6 +12,6 @@ typedef struct
     void* extra;
 }NFuncArgs;
 
-typedef void (*NFunc) (NFuncArgs*);
+typedef int (*NFunc) (NFuncArgs*);
 
 #endif
