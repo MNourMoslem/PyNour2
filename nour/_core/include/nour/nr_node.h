@@ -32,10 +32,7 @@ typedef struct
     NDtype dtype;
 
     void* base;
-    nr_size_t* prefix;
-
     int flags;
-
     void* op;
 }Node;
 
@@ -69,5 +66,7 @@ Node_SameShape(const Node* a, const Node* b){
     return a->ndim == b->ndim 
             && memcmp(a->shape, b->shape, sizeof(nr_size_t) * a->ndim) == 0;
 }
+
+typedef Node* (*Node2NodeFunc) (Node* , const Node*);
 
 #endif
