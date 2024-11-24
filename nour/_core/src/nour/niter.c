@@ -1,7 +1,7 @@
 #include "niter.h"
 
 NR_PUBLIC void
-NIter_FromNode(NIter* niter, Node* node, int iter_mode){
+NIter_FromNode(NIter* niter, const Node* node, int iter_mode){
     if (iter_mode == NITER_MODE_NONE){
         if (NODE_IS_CONTIGUOUS(node)){
             iter_mode = NITER_MODE_CONTIGUOUS;
@@ -16,8 +16,8 @@ NIter_FromNode(NIter* niter, Node* node, int iter_mode){
 }
 
 NR_PUBLIC void
-NIter_New(NIter* niter ,void* data, int ndim, nr_size_t* shape,
-          nr_size_t* strides, int iter_mode)
+NIter_New(NIter* niter ,void* data, int ndim, const nr_size_t* shape,
+          const nr_size_t* strides, int iter_mode)
 {
     niter->data = data;
     niter->nd_m1 = ndim - 1;
@@ -122,8 +122,8 @@ NMultiIter_New(Node** nodes, int n_nodes, NMultiIter* mit){
 
 
 NR_PUBLIC int
-NWindowIter_New(Node* node, NWindowIter* wit, nr_size_t* window_dims,
-                 nr_size_t* strides_factor, nr_size_t* dilation)
+NWindowIter_New(const Node* node, NWindowIter* wit, const nr_size_t* window_dims,
+                const nr_size_t* strides_factor, const nr_size_t* dilation)
 {
     for (int i = 0; i < node->ndim; i++){
         if (node->shape[i] < window_dims[i]){
