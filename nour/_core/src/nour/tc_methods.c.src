@@ -192,6 +192,9 @@ NR_STATIC Node*
 Node_TypeConvert_%ST%_to_%DT%(Node* dst, const Node* src){
     if (!dst){
         dst = Node_NewEmpty(src->ndim, src->shape, src->dtype.dtype);
+        if (!dst){
+            return NULL;
+        }
     }
     else if (!Node_SameShape(dst, src)){
         _TC_RAISE_MISS_SHAPE(dst, src);
