@@ -94,6 +94,18 @@ _NMath_Func_2in1out(Node* c, Node* a, Node* b, NFunc func_list[]){
         return NULL;
     }
 
+    int a_copy = 0;
+    if (a->dtype.dtype != outt){
+        a = Node_ToType(NULL, a, outt);
+        a_copy = 1;
+    }
+
+    int b_copy = 0;
+    if (b->dtype.dtype != outt){
+        b = Node_ToType(NULL, b, outt);
+        b_copy = 1;
+    }
+
     NFunc func = func_list[outt];
 
     Node* in[] = {a, b};
@@ -103,7 +115,17 @@ _NMath_Func_2in1out(Node* c, Node* a, Node* b, NFunc func_list[]){
         .n_nodes = 2
     };
 
-    if (func(&args) != 0){
+    int res = func(&args);
+
+    if (a_copy){
+        Node_Free(a);
+    }
+
+    if (b_copy){
+        Node_Free(b);
+    }
+
+    if (res != 0){
         return NULL;
     }
     return args.out;
