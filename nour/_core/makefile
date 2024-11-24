@@ -3,34 +3,43 @@ CC = gcc
 CFLAGS = -I./include -Wall -Wextra -g
 
 # Directories
-SRC_NOUR_DIR = ./src/nour
+SRC_DIR = ./src
+SRC_NOUR_DIR = $(SRC_DIR)/nour
 INCLUDE_NOUR_DIR = ./include/nour
 BUILD_DIR = $(SRC_NOUR_DIR)/build
 OBJ_DIR = $(BUILD_DIR)/obj
 LIB_DIR = $(BUILD_DIR)/lib
+GEN_DIR = $(BUILD_DIR)/generated
 
-# Source and Object Files
-SRC_FILES = $(wildcard $(SRC_NOUR_DIR)/*.c)
-OBJ_FILES = $(patsubst $(SRC_NOUR_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
+# Python script
+FILE_GEN_PY = $(SRC_DIR)/code_generator/run.py
 
 # Library Name
 LIB_NAME = libnour.a
 
-# Targets
-all: make_dir $(LIB_DIR)/$(LIB_NAME)
+# Source Files
+SOURCES = $(wildcard $(SRC_NOUR_DIR)/*.c)
+OBJECTS = $(patsubst $(SRC_NOUR_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
 
-# Ensure necessary directories exist
-make_dir:
-	mkdir -p $(BUILD_DIR) $(OBJ_DIR) $(LIB_DIR)
+# Default target
+all: $(BUILD_DIR) generate $(LIB_DIR)/$(LIB_NAME)
 
-# Compile source files into object files
+# Create build directories
+$(BUILD_DIR):
+	mkdir -p $(OBJ_DIR) $(LIB_DIR) $(GEN_DIR)
+
+# Compile object files
 $(OBJ_DIR)/%.o: $(SRC_NOUR_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Build the static library
-$(LIB_DIR)/$(LIB_NAME): $(OBJ_FILES)
+# Archive library
+$(LIB_DIR)/$(LIB_NAME): $(OBJECTS)
 	ar rcs $@ $^
 
-# Clean build directories
+# Run Python script
+generate:
+	python $(FILE_GEN_PY)
+
+# Clean build artifacts
 clean:
 	rm -rf $(BUILD_DIR)
