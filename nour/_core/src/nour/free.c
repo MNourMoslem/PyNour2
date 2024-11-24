@@ -1,4 +1,6 @@
 #include "free.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 NR_PUBLIC void
 Node_Free(Node* node){
