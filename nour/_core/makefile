@@ -12,7 +12,7 @@ LIB_DIR = $(BUILD_DIR)/lib
 GEN_DIR = $(BUILD_DIR)/generated
 
 # Python script
-FILE_GEN_PY = $(SRC_DIR)/code_generator/run.py
+FILE_GEN_PY = ./code_generator/run.py
 
 # Library Name
 LIB_NAME = libnour.a
