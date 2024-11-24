@@ -2,9 +2,7 @@
 #define NOUR__CORE_SRC_NOUR_NMATH_H
 
 #include "nour/nour.h"
-
-NR_PUBLIC int 
-NMath_Add_Int32(NFuncArgs* args);
-
+#include "node_core.h"
+#include "build/generated/__nmath_generated.h"
 
 #endif
