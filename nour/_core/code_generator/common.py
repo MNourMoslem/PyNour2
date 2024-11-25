@@ -78,7 +78,7 @@ SRC_NOUR_DIR = os.path.join(SRC_DIR, "nour")
 NMATH_DIR = os.path.join(SRC_DIR, "nmath")
 BUILD_DIR = os.path.join(SRC_NOUR_DIR, "build")
 GEN_DIR = os.path.join(BUILD_DIR, "generated")
-MAGIC_WORD = "//Template//"
+MAGIC_WORD = "//Template//\n"
 
 def create_centered_header(header, total_width=50, frame_letter = "="):
     """
