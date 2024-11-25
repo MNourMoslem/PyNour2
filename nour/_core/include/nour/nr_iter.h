@@ -40,10 +40,12 @@ typedef struct NIter
 } while (0)
 
 #define NIter_NEXT_CONTIGUOUS(iter_ptr) do { \
+        (iter_ptr)->idx++;\
         (iter_ptr)->current += (iter_ptr)->step; \
 } while (0)
 
 #define NIter_NEXT_STRIDED(iter_ptr) do { \
+    (iter_ptr)->idx++;\
     for (int i = (iter_ptr)->nd_m1; i > -1; i--){ \
         if ((iter_ptr)->coords[i] < (iter_ptr)->shape_m1[i]){\
             (iter_ptr)->coords[i]++;\
@@ -56,7 +58,6 @@ typedef struct NIter
 } while (0)
 
 #define NIter_NEXT(iter_ptr) do { \
-        (iter_ptr)->idx++;\
         if ((iter_ptr)->iter_mode == NITER_MODE_CONTIGUOUS){\
             NIter_NEXT_CONTIGUOUS((iter_ptr));\
         }\
