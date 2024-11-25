@@ -9,14 +9,14 @@ typedef enum
 {
     NR_CONTIGUOUS_TYPE = 0,
     NR_STRIDED_TYPE,
-    NR_CHILD_TYPE,
+    NR_SCALAR_TYPE,
 }nr_narray_type;
 
 #define NR_NODE_C_ORDER 0x1
 #define NR_NODE_F_ORDER 0x2
 #define NR_NODE_CONTIGUOUS 0x4
 #define NR_NODE_STRIDED 0x8
-#define NR_NODE_CHILD 0x10
+#define NR_NODE_SCALAR 0x10
 #define NR_NODE_WRITABLE 0x20
 #define NR_NODE_SORTED 0x40
 #define NR_NODE_OWNDATA 0x80
@@ -47,7 +47,7 @@ typedef struct
 #define NODE_IS_F_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_F_ORDER)
 #define NODE_IS_CONTIGUOUS(node) NR_CHKFLG(node->flags, NR_NODE_CONTIGUOUS)
 #define NODE_IS_STRIDED(node) NR_CHKFLG(node->flags, NR_NODE_STRIDED)
-#define NODE_IS_CHILD(node) NR_CHKFLG(node->flags, NR_NODE_CHILD)
+#define NODE_IS_SCALAR(node) NR_CHKFLG(node->flags, NR_NODE_SCALAR)
 #define NODE_IS_WRITABLE(node) NR_CHKFLG(node->flags, NR_NODE_WRITABLE)
 #define NODE_IS_SORTED(node) NR_CHKFLG(node->flags, NR_NODE_SORTED)
 #define NODE_IS_OWNDATA(node) NR_CHKFLG(node->flags, NR_NODE_OWNDATA)
