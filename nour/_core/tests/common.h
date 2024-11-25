@@ -38,6 +38,21 @@ NTEST_TAIL
                             __dtype);                    \
     } while (0)
 
+#define _NEW_NODE_4x4_FLOAT64(node_ptr)                  \
+    do {                                                 \
+        nr_float64 __arr[] = {1, 2, 3, 4,                \
+                                5, 6, 7, 8,              \
+                                9, 10, 11, 12,           \
+                                13, 14, 15, 16};         \
+        nr_size_t __shape[] = {4, 4};                    \
+        int __ndim = 2;                                  \
+        NR_DTYPE __dtype = NR_FLOAT64;                   \
+        node_ptr = Node_New(__arr, 1,                    \
+                            __ndim,                      \
+                            __shape,                     \
+                            __dtype);                    \
+    } while (0)
+
 #define _NEW_NODE_2x2_INT32(node_ptr)                    \
     do {                                                 \
         nr_int32 __arr[] = {1, 2,                        \
