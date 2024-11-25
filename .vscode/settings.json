@@ -7,6 +7,17 @@
         "compare": "cpp",
         "random": "c",
         "cmath": "cpp",
-        "__nmath_generated.c": "cpp"
+        "__nmath_generated.c": "cpp",
+        "array": "cpp",
+        "charconv": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "variant": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "span": "cpp",
+        "format": "cpp",
+        "numbers": "cpp"
     }
 }
