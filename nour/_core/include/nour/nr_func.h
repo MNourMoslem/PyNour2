@@ -7,6 +7,7 @@ typedef struct
 {
     Node** nodes;
     Node* out;
+    NR_DTYPE outtype;
     int n_nodes;
     int dim;
     void* extra;
