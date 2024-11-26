@@ -5,6 +5,9 @@
 #include <float.h>
 #include <stdint.h>
 
+#define NR_INFF (float)INFINITY
+#define NR_INF INFINITY
+
 #define NR_E         2.718281828459045235360287471352662498  /* e */
 #define NR_LOG2E     1.442695040888963407359924681001892137  /* log_2 e */
 #define NR_LOG10E    0.434294481903251827651128918916605082  /* log_10 e */
