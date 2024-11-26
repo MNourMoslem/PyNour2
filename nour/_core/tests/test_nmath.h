@@ -237,6 +237,8 @@ static int test_nmath_6(){
 
     n3 = NMath_Bge(NULL, n1, n2);
     if (!n3){
+        Node_Free(n1);
+        Node_Free(n2);
         return -1;
     }
 
