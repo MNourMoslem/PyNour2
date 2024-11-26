@@ -20,27 +20,10 @@ _CheckDtypes_3Nodes(__nmath_iotypes* iot, Node* c, Node* a, Node* b, int outtype
     NR_DTYPE at = a->dtype.dtype;
     NR_DTYPE bt = b->dtype.dtype;
     NR_DTYPE abt = at == bt ? at : NTools_BroadcastDtypes(at, bt);
-    NR_DTYPE ct = c->dtype.dtype;
-    NR_DTYPE outt = c ? ct : abt;
-
-    if (outtype == NMATH_IOTYPE_NONE){
-        iot->outtype = outt;
-    }
-    else if (outtype == NMATH_IOTYPE_FLOAT){
-        iot->outtype = (outt > NR_UINT64) && (outt < NR_NUM_NUMIRC_DT) ? outt : NR_FLOAT64;  
-    }
-    else if (outtype == NMATH_IOTYPE_BOOL){
-        iot->outtype = NR_BOOL;
-    }
-    else if (outtype == NMATH_IOTYPE_INT){
-        iot->outtype = outt < NR_UINT64 ? outt : NR_UINT64;
-    }
-    else{
-        iot->outtype = outt;
-    }
+    NR_DTYPE outt = c ? c->dtype.dtype : abt;
 
     if (intype == NMATH_IOTYPE_NONE){
-        iot->intype = outt;
+        iot->intype = abt;
     }
     else if (intype == NMATH_IOTYPE_FLOAT){
         iot->intype = (abt > NR_UINT64) && (abt < NR_NUM_NUMIRC_DT) ? abt : NR_FLOAT64;  
@@ -49,10 +32,26 @@ _CheckDtypes_3Nodes(__nmath_iotypes* iot, Node* c, Node* a, Node* b, int outtype
         iot->intype = NR_BOOL;
     }
     else if (intype == NMATH_IOTYPE_INT){
-        iot->intype = abt < NR_UINT64 ? abt : NR_UINT64;
+        iot->intype = abt <= NR_UINT64 ? abt : NR_INT64;
     }
     else{
-        iot->intype = outt;
+        iot->intype = abt;
+    }
+
+    if (outtype == NMATH_IOTYPE_NONE){
+        iot->outtype = iot->intype;
+    }
+    else if (outtype == NMATH_IOTYPE_FLOAT){
+        iot->outtype = (outt > NR_UINT64) && (outt < NR_NUM_NUMIRC_DT) ? outt : NR_FLOAT64;  
+    }
+    else if (outtype == NMATH_IOTYPE_BOOL){
+        iot->outtype = NR_BOOL;
+    }
+    else if (outtype == NMATH_IOTYPE_INT){
+        iot->outtype = outt <= NR_UINT64 ? outt : NR_INT64;
+    }
+    else{
+        iot->outtype = iot->intype;
     }
 }
 
@@ -106,12 +105,13 @@ _NMath_Func_2in1out(Node* c, Node* a, Node* b, NFunc func_list[], int outtype, i
         out = c;
     }
 
-    NFunc func = func_list[iot.outtype];
+    NFunc func = func_list[iot.intype];
 
     Node* in[] = {a, b};
     NFuncArgs args = {
         .nodes = in,
         .out = out,
+        .outtype = iot.outtype,
         .n_nodes = 2
     };
 
