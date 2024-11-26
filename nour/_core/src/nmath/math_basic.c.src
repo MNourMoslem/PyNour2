@@ -1,6 +1,8 @@
 #include "nour/nour.h"
 #include "../src/nour/niter.h"
 #include "../src/nour/node_core.h"
+#include "../src/nmath/loops.h"
+#include "../src/nmath/_nmath_func_core.h"
 
 /**
  * Template for a basic mathematical operation between two input nodes.
@@ -62,75 +64,6 @@
  *   - Returns `-1` if memory allocation fails or the input nodes cannot be iterated over properly.
  */
 
- NR_PRIVATE NR_DTYPE
-_CheckDtypes_3Nodes(Node* c, Node* a, Node* b){
-    NR_DTYPE at = a->dtype.dtype;
-    NR_DTYPE bt = b->dtype.dtype;
-    NR_DTYPE outt = at == bt ? at : NTools_BroadcastDtypes(at, bt);
-    NR_DTYPE ct = c ? c->dtype.dtype : outt;
-
-    if (outt != ct){
-        char outt_str[10];
-        char ct_str[10];
-        NDtype_AsStringVarType(outt, outt_str);
-        NDtype_AsStringVarType(ct, ct_str);
-
-        NError_RaiseError(
-            NError_ValueError,
-            "out node must have the same dtype as the input nodes"
-            "dtype or the broadcasted dtype, got %s expected %s",
-            outt_str, ct_str
-        );
-        return -1;
-    }
-
-    return outt;
-}
-
-NR_PRIVATE Node*
-_NMath_Func_2in1out(Node* c, Node* a, Node* b, NFunc func_list[]){
-    NR_DTYPE outt = _CheckDtypes_3Nodes(c, a, b);
-    if (outt < NR_BOOL){
-        return NULL;
-    }
-
-    int a_copy = 0;
-    if (a->dtype.dtype != outt){
-        a = Node_ToType(NULL, a, outt);
-        a_copy = 1;
-    }
-
-    int b_copy = 0;
-    if (b->dtype.dtype != outt){
-        b = Node_ToType(NULL, b, outt);
-        b_copy = 1;
-    }
-
-    NFunc func = func_list[outt];
-
-    Node* in[] = {a, b};
-    NFuncArgs args = {
-        .nodes = in,
-        .out = c,
-        .n_nodes = 2
-    };
-
-    int res = func(&args);
-
-    if (a_copy){
-        Node_Free(a);
-    }
-
-    if (b_copy){
-        Node_Free(b);
-    }
-
-    if (res != 0){
-        return NULL;
-    }
-    return args.out;
-}
-
 //Template//
 NR_PUBLIC int
 NMath_%OP%_%T%(NFuncArgs* args){
@@ -140,7 +73,7 @@ NMath_%OP%_%T%(NFuncArgs* args){
 
     int ss = Node_SameShape(n1, n2);
     if (!out && ss){
-        out = Node_NewEmpty(n1->ndim, n1->shape, n1->dtype.dtype);
+        out = Node_NewEmpty(n1->ndim, n1->shape, args->outtype);
         if (!out){
             return -1;
         }
@@ -150,73 +83,77 @@ NMath_%OP%_%T%(NFuncArgs* args){
     int n2c = NODE_IS_CONTIGUOUS(n2);
     int outc = out ? NODE_IS_CONTIGUOUS(out) : 0;
 
-    if (ss && outc){
-        if (n1c & n2c){
-            int nitems = Node_NItems(n1);
-            for (int i = 0; i < nitems; i++){
-                *((%NT%*)out->data + i) = NMATH_%OPC%(  *((%NT%*)n1->data + i), 
-                                                        *((%NT%*)n2->data + i)  );
+    if (ss){
+        if (outc){
+            if (n1c & n2c){
+                NMATH_LOOP_CCC(NMATH_%OPC%, %O_NT%, %I_NT%);
+            }
+            else if (n1c | n2c){
+                NMATH_LOOP_CSC(NMATH_%OPC%, %O_NT%, %I_NT%);     
+            }
+            else{
+                NMATH_LOOP_CSS(NMATH_%OPC%, %O_NT%, %I_NT%);      
             }
         }
-        else if (n1c | n2c){
-            Node* con_n = NODE_IS_CONTIGUOUS(n1) ? n1 : n2;
-            Node* str_n = NODE_IS_CONTIGUOUS(n1) ? n2 : n1;
-            NIter it;
-            NIter_FromNode(&it, str_n, NITER_MODE_STRIDED);
-
-            int i = 0;
-            NIter_ITER(&it);
-            while (NIter_NOTDONE(&it))
-            {
-                *((%NT%*)out->data + i) = NMATH_%OPC%(  *(%NT%*)NIter_ITEM(&it), 
-                                                        *((%NT%*)con_n->data + i)  );
-
-                NIter_NEXT(&it);
-                i++;
-            }   
-        }
         else{
-            NIter it1, it2;
-            NIter_FromNode(&it1, n1, NITER_MODE_NONE);
-            NIter_FromNode(&it2, n2, NITER_MODE_NONE);
-
-            int i = 0;
-
-            NIter_ITER(&it1);
-            NIter_ITER(&it2);
-            while (NIter_NOTDONE(&it1))
-            {
-                *((%NT%*)out->data + i) = NMATH_%OPC%(  *(%NT%*)NIter_ITEM(&it1),
-                                                        *(%NT%*)NIter_ITEM(&it2)   );
-
-                NIter_NEXT(&it1);
-                NIter_NEXT(&it2);
-                i++;
+            if (n1c & n2c){
+                NMATH_LOOP_SCC(NMATH_%OPC%, %O_NT%, %I_NT%);
+            }
+            else if (n1c | n2c){
+                NMATH_LOOP_SSC(NMATH_%OPC%, %O_NT%, %I_NT%);
+            }
+            else{
+                NMATH_LOOP_SSS(NMATH_%OPC%, %O_NT%, %I_NT%);      
             }
         }
     }
     else{
-        NMultiIter mit;
-        if (NMultiIter_New(args->nodes, 2, &mit) != 0){
-            return -1;
-        }
+        int issclr = NODE_IS_SCALAR(n1) | NODE_IS_SCALAR(n2);
+        if (issclr){
+            %I_NT% sclr = *(%I_NT%*)(NODE_IS_SCALAR(n1) ? n1->data : n2->data);
+            Node* n = NODE_IS_SCALAR(n1) ? n2 : n1;
+            int nc = NODE_IS_CONTIGUOUS(n);
 
-        if (!out){
-            out = Node_NewEmpty(mit.out_ndim, mit.out_shape, n1->dtype.dtype);
-            if (!out){
-                return -1;
+            if (outc){
+                if (nc){
+                    NMATH_LOOP_CC_S(NMATH_%OPC%, %O_NT%, %I_NT%);
+                }
+                else{
+                    NMATH_LOOP_CS_S(NMATH_%OPC%, %O_NT%, %I_NT%);
+                }   
+            }
+            else{
+                if (nc){
+                    NMATH_LOOP_SC_S(NMATH_%OPC%, %O_NT%, %I_NT%);
+                }
+                else{
+                    NMATH_LOOP_SS_S(NMATH_%OPC%, %O_NT%, %I_NT%);
+                }   
             }
         }
+        else{
+            NMultiIter mit;
+            if (NMultiIter_New(args->nodes, 2, &mit) != 0){
+                return -1;
+            }
 
-        int i;
-        NMultiIter_ITER(&mit);
-        while (NMultiIter_NOTDONE(&mit))
-        {
-            *((%NT%*)out->data + i) = NMATH_%OPC%(  *(%NT%*)NMultiIter_ITEM(&mit, 0),
-                                                    *(%NT%*)NMultiIter_ITEM(&mit, 1)  );
-        
-            i++;
-            NMultiIter_NEXT(&mit);
+            if (!out){
+                out = Node_NewEmpty(mit.out_ndim, mit.out_shape, args->outtype);
+                if (!out){
+                    return -1;
+                }
+            }
+
+            nr_size_t i;
+            NMultiIter_ITER(&mit);
+            while (NMultiIter_NOTDONE(&mit))
+            {
+                *((%O_NT%*)out->data + i) = NMATH_%OPC%(*(%I_NT%*)NMultiIter_ITEM(&mit, 0),
+                                                        *(%I_NT%*)NMultiIter_ITEM(&mit, 1));
+            
+                i++;
+                NMultiIter_NEXT(&mit);
+            }
         }
     }
     args->out = out;
@@ -231,5 +168,5 @@ NR_STATIC NFunc __NMATH_%OPC%_METHODS__[] = {
 //Template//
 NR_PUBLIC Node*
 NMath_%OP%(Node* c, Node* b, Node*a){
-    return _NMath_Func_2in1out(c, b, a, __NMATH_%OPC%_METHODS__);
+    return _NMath_Func_2in1out(c, b, a, __NMATH_%OPC%_METHODS__, %OUTTYPE%, %INTYPE%);
 }
