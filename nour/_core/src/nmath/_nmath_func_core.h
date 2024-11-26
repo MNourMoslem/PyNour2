@@ -75,6 +75,7 @@ NR_PRIVATE Node*
 _NMath_Func_2in1out(Node* c, Node* a, Node* b, NFunc func_list[], int outtype, int intype){
     int copy_a = 0, copy_b = 0;
     int cast_out_to_c = 0;
+    int func_idx;
     __nmath_iotypes iot;
      _CheckDtypes_3Nodes(&iot, c, a, b, outtype, intype);
 
@@ -105,7 +106,14 @@ _NMath_Func_2in1out(Node* c, Node* a, Node* b, NFunc func_list[], int outtype, i
         out = c;
     }
 
-    NFunc func = func_list[iot.intype];
+    if (intype != NMATH_IOTYPE_FLOAT){
+        func_idx = (int)iot.intype;
+    }
+    else{
+        func_idx = (int)iot.intype - (int)NR_UINT64 - 1;
+    }
+
+    NFunc func = func_list[func_idx];
 
     Node* in[] = {a, b};
     NFuncArgs args = {
