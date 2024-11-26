@@ -32,8 +32,9 @@ typedef struct
     NDtype dtype;
 
     void* base;
+    int cref;
+
     int flags;
-    void* op;
 }Node;
 
 #define NODE_DATA(node) node->data
