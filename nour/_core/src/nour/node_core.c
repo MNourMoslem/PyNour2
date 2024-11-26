@@ -22,7 +22,7 @@ _Node_NewInit(int ndim, NR_DTYPE dtype){
     node->dtype.size = NDtype_Size(dtype);
     node->base = NULL;
     node->flags = 0;
-    node->op = NULL;
+    node->cref = 1;
 
     return node;
 }
@@ -211,6 +211,44 @@ Node_Copy(Node* dst, const Node* src){
             NIter_NEXT(&dit);
             NIter_NEXT(&sit);
         }
+    }
+
+    return dst;
+}
+
+NR_PUBLIC Node*
+Node_Reshape(Node* dst, const Node* node, nr_size_t* new_shp, int new_ndim){
+    if (new_ndim > NR_NODE_MAX_NDIM){
+        return NULL;
+    }
+
+    nr_size_t old_nitems = Node_NItems(node);
+    nr_size_t new_nitems = NR_NItems(new_ndim, new_shp);
+    if (new_nitems != old_nitems){
+        return NULL;
+    }
+
+    int dst_copy = 0;
+    if (!dst){
+        dst = Node_Copy(NULL, node);
+        if (!dst){
+            return NError_RaiseMemoryError();
+        }
+        dst_copy = 1;
+    }
+
+    if (dst->ndim <= new_ndim){
+        memcpy(dst->shape, new_shp, new_ndim * sizeof(nr_size_t));
+    }
+    else{
+        nr_size_t* new_shp_block = malloc(sizeof(nr_size_t) * new_ndim);
+        if (!new_shp_block){
+            if (dst_copy) {Node_Free(dst);}
+            return NULL;
+        }
+        memcpy(dst->shape, new_shp, new_ndim * sizeof(nr_size_t));
+        free(dst->shape);
+        dst->shape = new_shp_block;
     }
 
     return dst;
