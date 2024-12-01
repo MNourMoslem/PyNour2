@@ -14,6 +14,7 @@ BUILD_DIR = $(SRC_NOUR_DIR)/build
 OBJ_DIR = $(BUILD_DIR)/obj
 LIB_DIR = $(BUILD_DIR)/lib
 GEN_DIR = $(BUILD_DIR)/generated
+PYD_OUT_DIR = $(BUILD_DIR)
 
 # Python script
 FILE_GEN_PY = ./code_generator/run.py
@@ -46,7 +47,7 @@ generate:
 
 setup: $(LIB_DIR)/$(LIB_NAME)
 	gcc -shared -fPIC -I$(PY_INCLUDE)  -L$(PY_LIBS)\
-	 -I./include -L./src/nour/build/lib ./src/nour/pynour_module.c -o nour.pyd -lnour -l$(PY_LIBNAME)
+	 -I./include -L./src/nour/build/lib ./src/nour/pynour_module.c -o $(PYD_OUT_DIR)/nour.pyd -lnour -l$(PY_LIBNAME)
 
 # Clean build artifacts
 clean:
