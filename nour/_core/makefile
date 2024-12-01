@@ -1,6 +1,10 @@
 # Compiler and Flags
 CC = gcc
-CFLAGS = -I./include -Wall -Wextra -g
+PY_INCLUDE = C:/Users/Abed/anaconda3/include
+PY_LIBS = C:/Users/Abed/anaconda3/libs
+PY_LIBNAME = python3
+CFLAGS = -I./include -I$(PY_INCLUDE) -L$(PY_LIBS) -Wall -Wextra -g -l$(PY_LIBNAME)
+SETUP_PY = ./setup.py
 
 # Directories
 SRC_DIR = ./src
@@ -22,7 +26,7 @@ SOURCES = $(wildcard $(SRC_NOUR_DIR)/*.c)
 OBJECTS = $(patsubst $(SRC_NOUR_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
 
 # Default target
-all: $(BUILD_DIR) generate $(LIB_DIR)/$(LIB_NAME)
+all: $(BUILD_DIR) generate $(LIB_DIR)/$(LIB_NAME) setup
 
 # Create build directories
 $(BUILD_DIR):
@@ -30,7 +34,7 @@ $(BUILD_DIR):
 
 # Compile object files
 $(OBJ_DIR)/%.o: $(SRC_NOUR_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ -l$(PY_LIBNAME)
 
 # Archive library
 $(LIB_DIR)/$(LIB_NAME): $(OBJECTS)
@@ -39,6 +43,10 @@ $(LIB_DIR)/$(LIB_NAME): $(OBJECTS)
 # Run Python script
 generate:
 	python $(FILE_GEN_PY)
+
+setup: $(LIB_DIR)/$(LIB_NAME)
+	gcc -shared -fPIC -I$(PY_INCLUDE)  -L$(PY_LIBS)\
+	 -I./include -L./src/nour/build/lib ./src/nour/pynour_module.c -o nour.pyd -lnour -l$(PY_LIBNAME)
 
 # Clean build artifacts
 clean:
