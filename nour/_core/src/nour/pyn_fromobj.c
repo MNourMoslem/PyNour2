@@ -18,7 +18,8 @@ typedef struct
 #define PYN_SEQ_GETITEM(obj, item) PySequence_Check(obj) ? PySequence_GetItem(obj, item):\
                                     PyObject_GetItem(obj, PyLong_FromLong(item))
 
-#define PYN_IS_ITER(obj) PyObject_HasAttrString(obj, "__iter__")
+#define PYN_IS_ITER(obj) (PyObject_HasAttrString(obj, "__len__")\
+                          && PyObject_HasAttrString(obj, "__getitem__"))
 
 #define PYN_LONG NR_INT64
 #define PYN_FLOAT NR_FLOAT64
