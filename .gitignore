@@ -3,6 +3,7 @@
 
 nour/_core/src/nour/build
 nour/_core/__pycache__
+nour/_core/code_generator/__pycache__
 nour/_core/tests/run.exe
 test.c
 test.py
