@@ -269,7 +269,6 @@ copy_data_from_seq2node_int_first(PyObject* obj, Node* node,
                     return -1;
                 }
 
-                *idx = cidx + i;
                 Py_DECREF(item);
                 return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
             }
@@ -350,7 +349,6 @@ copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
                     Py_DECREF(item);
                     return -1;
                 }
-                *idx = cidx + i;
                 Py_DECREF(item);
                 return copy_data_from_seq2node_int_first(obj, node, idx, len, i);
             }
@@ -360,7 +358,6 @@ copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
                     Py_DECREF(item);
                     return -1;
                 }
-                *idx = cidx + i;
                 Py_DECREF(item);
                 return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
             }
