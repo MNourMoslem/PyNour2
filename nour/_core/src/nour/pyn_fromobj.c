@@ -1,4 +1,5 @@
 #include"pyn_fromobj.h"
+#include "ntools.h"
 #include "node_core.h"
 
 typedef struct
@@ -62,11 +63,12 @@ convert_data_block_from_bool2long(Node* node, nr_size_t end){
     }
 
     if (NODE_IS_OWNDATA(node)){
-        free(node->data);
+        free(dataptr);
     }
     node->data = new_dataptr;
     node->dtype.dtype = PYN_LONG;
     node->dtype.size = NDtype_Size(PYN_LONG);
+    NTools_CalculateStrides(node->ndim, node->shape, node->dtype.size, node->strides);
     return 0;
 }
 
@@ -91,6 +93,7 @@ convert_data_block_from_bool2float(Node* node, nr_size_t end){
     node->data = new_dataptr;
     node->dtype.dtype = PYN_FLOAT;
     node->dtype.size = NDtype_Size(PYN_FLOAT);
+    NTools_CalculateStrides(node->ndim, node->shape, node->dtype.size, node->strides);
     return 0;
 }
 
@@ -115,6 +118,7 @@ convert_data_block_from_long2float(Node* node, nr_size_t end){
     node->data = new_dataptr;
     node->dtype.dtype = PYN_FLOAT;
     node->dtype.size = NDtype_Size(PYN_FLOAT);
+    NTools_CalculateStrides(node->ndim, node->shape, node->dtype.size, node->strides);
     return 0;
 }
 
