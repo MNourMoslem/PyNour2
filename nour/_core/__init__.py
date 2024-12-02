@@ -1,1 +1,1 @@
-from src.nour.build import nour
+from core import *
