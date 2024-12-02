@@ -2,12 +2,13 @@
 #include "pyn_fromobj.h"
 #include "pyn_niter.h"
 #include "niter.h"
+#include "pyn_getset.h"
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 NR_STATIC PyObject*
-PyNodeType_New(PyTypeObject *type_obj, PyObject *args, PyObject *kwargs){
+PyNodeType_New(PyTypeObject *type_obj, PyObject* NR_UNUSED(args), PyObject* NR_UNUSED(kwargs)){
     return (PyObject*)PyNode_Create(NULL);
 }
 
@@ -15,7 +16,7 @@ NR_STATIC int
 PyNodeType_Init(PyNode* pyn, PyObject* args, PyObject* kwargs){
     PyObject* array_like;
     if (!PyArg_ParseTuple(args, "O", &array_like)){
-        PyErr_SetString(PyExc_ValueError, "i have no idea");
+        PyErr_SetString(PyExc_ValueError, "could not read the args");
         return -1;
     }
 
@@ -65,6 +66,7 @@ PyTypeObject PyNodeType = {
     .tp_init = (initproc)PyNodeType_Init,
     .tp_as_mapping = &PyNodeType_as_mapping,
     .tp_iter = (iternextfunc)PyNodeType_Iter,
+    .tp_getset = PyNodeType_GetSetFuncions,
 };
 
 static PyMethodDef module_methods[] = {
