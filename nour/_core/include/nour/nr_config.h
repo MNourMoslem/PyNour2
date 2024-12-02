@@ -47,4 +47,16 @@
 
 #define NR_NULL ((void*)0)
 
+#if defined(__GNUC__)
+    #define __COMP_NR_UNUSED __attribute__ ((__unused__))
+#elif defined(__ICC)
+    #define __COMP_NR_UNUSED __attribute__ ((__unused__))
+#elif defined(__clang__)
+    #define __COMP_NR_UNUSED __attribute__ ((unused))
+#else
+    #define __COMP_NR_UNUSED
+#endif
+
+#define NR_UNUSED(x) _##x##__COMP_NPY_UNUSED
+
 #endif /* NR_CONFIG_H */
