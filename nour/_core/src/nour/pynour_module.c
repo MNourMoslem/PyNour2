@@ -1,5 +1,7 @@
 #include "pyn_core.h"
 #include "pyn_fromobj.h"
+#include "pyn_niter.h"
+#include "niter.h"
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
@@ -20,9 +22,20 @@ PyNodeType_Init(PyNode* pyn, PyObject* args, PyObject* kwargs){
     return PyNode_FromArrayLike(pyn, array_like);
 }
 
+NR_STATIC PyObject*
+PyNodeType_Iter(PyObject* self){
+    PyObject* args_tuple = PyTuple_Pack(1, self);
+    if (args_tuple == NULL) {
+        return NULL; 
+    }
+
+    PyObject* pit = PyNIterType.tp_new(&PyNIterType, args_tuple, NULL);
+    return Py_TYPE(pit)->tp_iter(pit);
+}
+
 NR_STATIC PyObject* PyNodeType_GetItem(PyNode* self, PyObject* index) {
     if (self->node == NULL) {
-        PyErr_SetString(PyExc_ValueError, "Data is not initialized");
+        PyErr_SetString(PyExc_ValueError, "Node is not initialized");
         return NULL;
     }
 
@@ -34,9 +47,7 @@ NR_STATIC PyObject* PyNodeType_GetItem(PyNode* self, PyObject* index) {
     nr_int64 val = ((nr_int64*)self->node->data)[idx];
 
     PyObject* item = PyLong_FromLongLong(val);
-
     Py_INCREF(item);
-
     return item;
 }
 
@@ -53,6 +64,7 @@ PyTypeObject PyNodeType = {
     .tp_new = PyNodeType_New,
     .tp_init = (initproc)PyNodeType_Init,
     .tp_as_mapping = &PyNodeType_as_mapping,
+    .tp_iter = (iternextfunc)PyNodeType_Iter,
 };
 
 static PyMethodDef module_methods[] = {
@@ -73,12 +85,16 @@ PyMODINIT_FUNC PyInit_nour(void) {
     if (PyType_Ready(&PyNodeType) < 0)
         return NULL;
 
+    if (PyType_Ready(&PyNIterType) < 0)
+        return NULL;
+
     m = PyModule_Create(&nour);
     if (m == NULL)
         return NULL;
 
     Py_INCREF(&PyNodeType);
     PyModule_AddObject(m, "node", (PyObject*)&PyNodeType);
+    PyModule_AddObject(m, "niter", (PyObject*)&PyNIterType);
 
     return m;
 }
