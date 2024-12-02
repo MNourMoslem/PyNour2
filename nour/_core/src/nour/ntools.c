@@ -23,3 +23,36 @@ NTools_BroadcastStrides(nr_size_t* a_shape, int a_ndim,
 
     return 0;
 }
+
+NR_PUBLIC NR_DTYPE
+NTools_BroadcastDtypes(NR_DTYPE a, NR_DTYPE b){
+    if (a == b){
+        return a;
+    }
+
+    NR_DTYPE c = a > b ? a : b;
+    if (c <= NR_UINT64){
+        if ((c & 1) == 0){
+            return NR_FLOAT64;
+        }
+        return c;
+    }
+    return c;
+}
+
+NR_PUBLIC int
+NTools_CalculateStrides(int nd, const nr_size_t* shape,
+                        nr_size_t itemsize, nr_size_t* _des_strides)
+{
+    nr_size_t nitems = 1;
+    if (!shape){
+        return -1;
+    }
+
+    for (int i = nd-1; i > -1; i--){
+        _des_strides[i] = nitems * itemsize;
+        nitems *= shape[i];
+    }
+
+    return 0;
+}

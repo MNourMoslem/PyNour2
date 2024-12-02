@@ -8,20 +8,11 @@ NTools_BroadcastStrides(nr_size_t* a_shape, int a_ndim,
                         nr_size_t* a_strides, nr_size_t* src_shape,
                         int src_ndim, nr_size_t* out_strides);
 
-NR_STATIC_INLINE NR_DTYPE
-NTools_BroadcastDtypes(NR_DTYPE a, NR_DTYPE b){
-    if (a == b){
-        return a;
-    }
+NR_PUBLIC NR_DTYPE
+NTools_BroadcastDtypes(NR_DTYPE a, NR_DTYPE b);
 
-    NR_DTYPE c = a > b ? a : b;
-    if (c <= NR_UINT64){
-        if ((c & 1) == 0){
-            return NR_FLOAT64;
-        }
-        return c;
-    }
-    return c;
-}
+NR_PUBLIC int
+NTools_CalculateStrides(int nd, const nr_size_t* shape,
+                        nr_size_t itemsize, nr_size_t* _des_strides);
 
 #endif
