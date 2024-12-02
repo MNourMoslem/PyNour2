@@ -18,6 +18,7 @@
         "string_view": "cpp",
         "span": "cpp",
         "format": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "pyn_fromobj.h": "c"
     }
 }
