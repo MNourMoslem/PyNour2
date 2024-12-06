@@ -5,9 +5,11 @@
 #include <float.h>
 #include <stdint.h>
 
+// define infinity
 #define NR_INFF (float)INFINITY
 #define NR_INF INFINITY
 
+// define e, log_2 e, log_10 e, log_e 2, log_e 10, pi, pi/2, pi/4, 1/pi, 2/pi
 #define NR_E         2.718281828459045235360287471352662498  /* e */
 #define NR_LOG2E     1.442695040888963407359924681001892137  /* log_2 e */
 #define NR_LOG10E    0.434294481903251827651128918916605082  /* log_10 e */
@@ -22,6 +24,7 @@
 #define NR_SQRT2     1.414213562373095048801688724209698079  /* sqrt(2) */
 #define NR_SQRT1_2   0.707106781186547524400844362104849039  /* 1/sqrt(2) */
 
+// define e, log_2 e, log_10 e, log_e 2, log_e 10, pi, pi/2, pi/4, 1/pi, 2/pi as floats
 #define NR_Ef        2.718281828459045235360287471352662498F /* e */
 #define NR_LOG2Ef    1.442695040888963407359924681001892137F /* log_2 e */
 #define NR_LOG10Ef   0.434294481903251827651128918916605082F /* log_10 e */
@@ -36,6 +39,7 @@
 #define NR_SQRT2f    1.414213562373095048801688724209698079F /* sqrt(2) */
 #define NR_SQRT1_2f  0.707106781186547524400844362104849039F /* 1/sqrt(2) */
 
+// double functions
 #define nr_sinh sinh
 #define nr_cosh cosh
 #define nr_tanh tanh
@@ -66,6 +70,7 @@
 #define nr_modf modf
 #define nr_nextafter nextafter
 
+// float functions
 #define nr_sinhf sinhf
 #define nr_coshf coshf
 #define nr_tanhf tanhf
@@ -92,7 +97,9 @@
 #define nr_copysignf copysignf
 #define nr_nextafterf nextafterf
 
-
+/*
+    Basic operations
+*/
 
 // All Types
 #define NMATH_ADD(a, b) (a + b)

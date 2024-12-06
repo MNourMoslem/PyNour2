@@ -24,35 +24,38 @@ typedef enum
 
 typedef struct
 {
-    void* data;
-    int ndim;
-    nr_size_t* shape;
-    nr_size_t* strides;
+    void* data; // pointer to the data
+    int ndim; // number of dimensions
+    nr_size_t* shape; // shape of the array
+    nr_size_t* strides; // strides of the array
 
-    NDtype dtype;
+    NDtype dtype; // data type
 
-    void* base;
-    int cref;
+    void* base; // pointer to the base of the array     
+    int flags; // flags
 
-    int flags;
+    char* name; // name of the node. This is useful for inheritance
 }Node;
 
-#define NODE_DATA(node) node->data
-#define NODE_DTYPE(node) node->dtype.dtype
-#define NODE_ITEMSIZE(node) node->dtype.size
-#define NODE_SHAPE(node) node->shape
-#define NODE_NDIM(node) node->ndim
-#define NODE_STRIDES(node) node->strides
+#define NODE_DATA(node) node->data // pointer to the data
+#define NODE_DTYPE(node) node->dtype.dtype // data type 
+#define NODE_ITEMSIZE(node) node->dtype.size // size of the data type
+#define NODE_SHAPE(node) node->shape // shape of the array
+#define NODE_NDIM(node) node->ndim // number of dimensions
+#define NODE_STRIDES(node) node->strides // strides of the array
 
-#define NODE_IS_C_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_C_ORDER)
-#define NODE_IS_F_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_F_ORDER)
-#define NODE_IS_CONTIGUOUS(node) NR_CHKFLG(node->flags, NR_NODE_CONTIGUOUS)
-#define NODE_IS_STRIDED(node) NR_CHKFLG(node->flags, NR_NODE_STRIDED)
-#define NODE_IS_SCALAR(node) NR_CHKFLG(node->flags, NR_NODE_SCALAR)
-#define NODE_IS_WRITABLE(node) NR_CHKFLG(node->flags, NR_NODE_WRITABLE)
-#define NODE_IS_SORTED(node) NR_CHKFLG(node->flags, NR_NODE_SORTED)
-#define NODE_IS_OWNDATA(node) NR_CHKFLG(node->flags, NR_NODE_OWNDATA)
+#define NODE_IS_C_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_C_ORDER) // check if the array is in C order
+#define NODE_IS_F_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_F_ORDER) // check if the array is in F order
+#define NODE_IS_CONTIGUOUS(node) NR_CHKFLG(node->flags, NR_NODE_CONTIGUOUS) // check if the array is contiguous
+#define NODE_IS_STRIDED(node) NR_CHKFLG(node->flags, NR_NODE_STRIDED) // check if the array is strided
+#define NODE_IS_SCALAR(node) NR_CHKFLG(node->flags, NR_NODE_SCALAR) // check if the array is scalar
+#define NODE_IS_WRITABLE(node) NR_CHKFLG(node->flags, NR_NODE_WRITABLE) // check if the array is writable
+#define NODE_IS_SORTED(node) NR_CHKFLG(node->flags, NR_NODE_SORTED) // check if the array is sorted
+#define NODE_IS_OWNDATA(node) NR_CHKFLG(node->flags, NR_NODE_OWNDATA) // check if the array owns the data
+#define NODE_IS_TRACK(node) NR_CHKFLG(node->flags, NR_NODE_TRACK) // check if the array is tracked
 
+// returns the number of items in the array
+// this function would probably be moved to another file in the future
 NR_STATIC_INLINE nr_size_t
 Node_NItems(const Node* node){
     nr_size_t nitems = 1;
@@ -62,12 +65,16 @@ Node_NItems(const Node* node){
     return nitems;
 }
 
+// checks if two nodes have the same shape
+// this function would probably be moved to another file in the future
 NR_STATIC_INLINE int
 Node_SameShape(const Node* a, const Node* b){
     return a->ndim == b->ndim 
             && memcmp(a->shape, b->shape, sizeof(nr_size_t) * a->ndim) == 0;
 }
 
+// function pointer to a function that takes two nodes and returns a node
+// this line would probably be moved to another file in the future
 typedef Node* (*Node2NodeFunc) (Node* , const Node*);
 
 #endif
