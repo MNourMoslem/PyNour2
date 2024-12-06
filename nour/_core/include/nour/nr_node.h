@@ -1,3 +1,25 @@
+/*
+    PyNour Node System
+    =================
+
+    Defines the core array node structure and operations for PyNour.
+    Provides the fundamental building block for n-dimensional array
+    operations and memory management.
+
+    Key Components:
+    --------------
+    1. Node structure for array representation
+    2. Array type definitions and flags
+    3. Memory layout and access patterns
+    4. Utility macros for node operations
+
+    Usage:
+    ------
+    The Node structure is the primary data container in PyNour,
+    representing n-dimensional arrays with various memory layouts
+    and access patterns.
+*/
+
 #ifndef NOUR__CORE_INCLUDE__NOUR_NR_NODE_H
 #define NOUR__CORE_INCLUDE__NOUR_NR_NODE_H
 
@@ -5,57 +27,69 @@
 #include "nr_dtypes.h"
 #include <string.h>
 
+/* Array memory layout types */
 typedef enum
 {
-    NR_CONTIGUOUS_TYPE = 0,
-    NR_STRIDED_TYPE,
-    NR_SCALAR_TYPE,
+    NR_CONTIGUOUS_TYPE = 0,  // Contiguous memory layout
+    NR_STRIDED_TYPE,         // Strided memory layout
+    NR_SCALAR_TYPE,          // Scalar value type
 }nr_narray_type;
 
-#define NR_NODE_C_ORDER 0x1
-#define NR_NODE_F_ORDER 0x2
-#define NR_NODE_CONTIGUOUS 0x4
-#define NR_NODE_STRIDED 0x8
-#define NR_NODE_SCALAR 0x10
-#define NR_NODE_WRITABLE 0x20
-#define NR_NODE_SORTED 0x40
-#define NR_NODE_OWNDATA 0x80
-#define NR_NODE_TRACK 0x100
+/* Node flags for various array properties */
+#define NR_NODE_C_ORDER 0x1      // C-style memory order
+#define NR_NODE_F_ORDER 0x2      // Fortran-style memory order
+#define NR_NODE_CONTIGUOUS 0x4   // Contiguous memory layout
+#define NR_NODE_STRIDED 0x8      // Strided memory layout
+#define NR_NODE_SCALAR 0x10      // Scalar value
+#define NR_NODE_WRITABLE 0x20    // Writable array
+#define NR_NODE_SORTED 0x40      // Sorted array
+#define NR_NODE_OWNDATA 0x80     // Owns its data
+#define NR_NODE_TRACK 0x100      // Memory tracking enabled
 
+/* Core array node structure */
 typedef struct
 {
-    void* data; // pointer to the data
-    int ndim; // number of dimensions
-    nr_size_t* shape; // shape of the array
-    nr_size_t* strides; // strides of the array
+    void* data;              // Pointer to array data
+    int ndim;                // Number of dimensions
+    nr_size_t* shape;        // Array shape
+    nr_size_t* strides;      // Array strides
 
-    NDtype dtype; // data type
+    NDtype dtype;            // Data type information
 
-    void* base; // pointer to the base of the array     
-    int flags; // flags
+    void* base;              // Base array reference
+    int flags;               // Array flags
 
-    char* name; // name of the node. This is useful for inheritance
+    char* name;              // Node name for identification
 }Node;
 
-#define NODE_DATA(node) node->data // pointer to the data
-#define NODE_DTYPE(node) node->dtype.dtype // data type 
-#define NODE_ITEMSIZE(node) node->dtype.size // size of the data type
-#define NODE_SHAPE(node) node->shape // shape of the array
-#define NODE_NDIM(node) node->ndim // number of dimensions
-#define NODE_STRIDES(node) node->strides // strides of the array
+/* Node access macros */
+#define NODE_DATA(node) node->data
+#define NODE_DTYPE(node) node->dtype.dtype
+#define NODE_ITEMSIZE(node) node->dtype.size
+#define NODE_SHAPE(node) node->shape
+#define NODE_NDIM(node) node->ndim
+#define NODE_STRIDES(node) node->strides
 
-#define NODE_IS_C_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_C_ORDER) // check if the array is in C order
-#define NODE_IS_F_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_F_ORDER) // check if the array is in F order
-#define NODE_IS_CONTIGUOUS(node) NR_CHKFLG(node->flags, NR_NODE_CONTIGUOUS) // check if the array is contiguous
-#define NODE_IS_STRIDED(node) NR_CHKFLG(node->flags, NR_NODE_STRIDED) // check if the array is strided
-#define NODE_IS_SCALAR(node) NR_CHKFLG(node->flags, NR_NODE_SCALAR) // check if the array is scalar
-#define NODE_IS_WRITABLE(node) NR_CHKFLG(node->flags, NR_NODE_WRITABLE) // check if the array is writable
-#define NODE_IS_SORTED(node) NR_CHKFLG(node->flags, NR_NODE_SORTED) // check if the array is sorted
-#define NODE_IS_OWNDATA(node) NR_CHKFLG(node->flags, NR_NODE_OWNDATA) // check if the array owns the data
-#define NODE_IS_TRACK(node) NR_CHKFLG(node->flags, NR_NODE_TRACK) // check if the array is tracked
+/* Node property check macros */
+#define NODE_IS_C_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_C_ORDER)
+#define NODE_IS_F_ORDER(node) NR_CHKFLG(node->flags, NR_NODE_F_ORDER)
+#define NODE_IS_CONTIGUOUS(node) NR_CHKFLG(node->flags, NR_NODE_CONTIGUOUS)
+#define NODE_IS_STRIDED(node) NR_CHKFLG(node->flags, NR_NODE_STRIDED)
+#define NODE_IS_SCALAR(node) NR_CHKFLG(node->flags, NR_NODE_SCALAR)
+#define NODE_IS_WRITABLE(node) NR_CHKFLG(node->flags, NR_NODE_WRITABLE)
+#define NODE_IS_SORTED(node) NR_CHKFLG(node->flags, NR_NODE_SORTED)
+#define NODE_IS_OWNDATA(node) NR_CHKFLG(node->flags, NR_NODE_OWNDATA)
+#define NODE_IS_TRACK(node) NR_CHKFLG(node->flags, NR_NODE_TRACK)
 
-// returns the number of items in the array
-// this function would probably be moved to another file in the future
+/*
+    Calculates total number of items in array.
+    
+    Parameters:
+        node: Target array node
+    
+    Returns:
+        Total number of items
+*/
 NR_STATIC_INLINE nr_size_t
 Node_NItems(const Node* node){
     nr_size_t nitems = 1;
@@ -65,16 +99,23 @@ Node_NItems(const Node* node){
     return nitems;
 }
 
-// checks if two nodes have the same shape
-// this function would probably be moved to another file in the future
+/*
+    Checks if two nodes have identical shapes.
+    
+    Parameters:
+        a: First node
+        b: Second node
+    
+    Returns:
+        1 if shapes match, 0 otherwise
+*/
 NR_STATIC_INLINE int
 Node_SameShape(const Node* a, const Node* b){
     return a->ndim == b->ndim 
             && memcmp(a->shape, b->shape, sizeof(nr_size_t) * a->ndim) == 0;
 }
 
-// function pointer to a function that takes two nodes and returns a node
-// this line would probably be moved to another file in the future
+/* Function type for node-to-node operations */
 typedef Node* (*Node2NodeFunc) (Node* , const Node*);
 
 #endif
