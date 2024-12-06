@@ -1,29 +1,71 @@
+/*
+    PyNour Data Types System
+    =======================
+
+    This file defines the fundamental data types and type handling mechanisms
+    used throughout the PyNour library. It provides a unified system for:
+
+    1. Defining supported numeric data types
+    2. Managing data type information and properties
+    3. Converting between different type representations
+    4. Handling type-related operations
+
+    Key Components:
+    --------------
+    1. NR_DTYPE: Enumeration of all supported numeric types
+    2. NDtype: Structure for storing type information
+    3. Type conversion utilities
+    4. Type string representation functions
+
+    Usage:
+    ------
+    This header provides the core type system used across PyNour for
+    consistent type handling and type-safe operations.
+*/
+
 #ifndef NOUR__CORE_INCLUDE__NOUR_NR_DTYPES_H
 #define NOUR__CORE_INCLUDE__NOUR_NR_DTYPES_H
 
 #include "nr_types.h"
 
+/*
+    Data Type Enumeration
+    --------------------
+    Defines all supported numeric types in PyNour.
+    Each type corresponds to a specific numeric format.
+*/
 typedef enum{
-    NR_BOOL = 0,
-    NR_INT8,
-    NR_UINT8,
-    NR_INT16,
-    NR_UINT16,
-    NR_INT32,
-    NR_UINT32,
-    NR_INT64,
-    NR_UINT64,
-    NR_FLOAT32,
-    NR_FLOAT64,
-    NR_NUM_NUMIRC_DT
+    NR_BOOL = 0,     // Boolean type
+    NR_INT8,         // 8-bit signed integer
+    NR_UINT8,        // 8-bit unsigned integer
+    NR_INT16,        // 16-bit signed integer
+    NR_UINT16,       // 16-bit unsigned integer
+    NR_INT32,        // 32-bit signed integer
+    NR_UINT32,       // 32-bit unsigned integer
+    NR_INT64,        // 64-bit signed integer
+    NR_UINT64,       // 64-bit unsigned integer
+    NR_FLOAT32,      // 32-bit floating point
+    NR_FLOAT64,      // 64-bit floating point
+    NR_NUM_NUMIRC_DT // Number of numeric data types
 }NR_DTYPE;
 
+/*
+    Data Type Information Structure
+    -----------------------------
+    Stores metadata about a specific data type.
+*/
 typedef struct
 {
-    NR_DTYPE dtype;
-    nr_size_t size;
+    NR_DTYPE dtype;    // The data type identifier
+    nr_size_t size;    // Size of the type in bytes
 }NDtype;
 
+/*
+    Data Type Size Array
+    ------------------
+    Stores the size in bytes for each data type.
+    Used for quick size lookups.
+*/
 static const nr_size_t __NR_NDTYPE_SIZES__[] = {
     NR_BOOL_SIZE,
     NR_INT8_SIZE,
@@ -38,11 +80,27 @@ static const nr_size_t __NR_NDTYPE_SIZES__[] = {
     NR_FLOAT64_SIZE,
 };
 
+/*
+    Returns the size in bytes for a given data type.
+    
+    Parameters:
+        dtype: The data type to get the size for
+    
+    Returns:
+        Size of the data type in bytes
+*/
 NR_HEADER nr_size_t
 NDtype_Size(NR_DTYPE dtype){
     return __NR_NDTYPE_SIZES__[dtype];
 }
 
+/*
+    Converts a data type to its string representation.
+    
+    Parameters:
+        dtype: The data type to convert
+        dst: Destination buffer for the string
+*/
 NR_HEADER void
 NDtype_AsString(NR_DTYPE dtype, char dst[]){
     switch (dtype)
@@ -86,6 +144,13 @@ NDtype_AsString(NR_DTYPE dtype, char dst[]){
     }
 }
 
+/*
+    Converts a data type to its variable type string representation.
+    
+    Parameters:
+        dtype: The data type to convert
+        dst: Destination buffer for the string
+*/
 NR_HEADER void
 NDtype_AsStringVarType(NR_DTYPE dtype, char dst[]){
     switch (dtype)
@@ -129,6 +194,13 @@ NDtype_AsStringVarType(NR_DTYPE dtype, char dst[]){
     }
 }
 
+/*
+    Converts a data type to its basic type string representation.
+    
+    Parameters:
+        dtype: The data type to convert
+        dst: Destination buffer for the string
+*/
 NR_HEADER void
 NDtype_AsStringOnlyType(NR_DTYPE dtype, char dst[]){
     switch (dtype)
@@ -171,6 +243,5 @@ NDtype_AsStringOnlyType(NR_DTYPE dtype, char dst[]){
         break;
     }
 }
-
 
 #endif
