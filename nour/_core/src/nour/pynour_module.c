@@ -8,19 +8,27 @@
 #include <Python.h>
 
 NR_STATIC PyObject*
-PyNodeType_New(PyTypeObject *type_obj, PyObject* NR_UNUSED(args), PyObject* NR_UNUSED(kwargs)){
-    return (PyObject*)PyNode_Create(NULL);
-}
-
-NR_STATIC int
-PyNodeType_Init(PyNode* pyn, PyObject* args, PyObject* kwargs){
+PyNodeType_New(PyTypeObject *type_obj, PyObject* args, PyObject* kwargs){
     PyObject* array_like;
-    if (!PyArg_ParseTuple(args, "O", &array_like)){
+
+    static char* kwlist[] = {"array", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O", kwlist, &array_like)){
         PyErr_SetString(PyExc_ValueError, "could not read the args");
-        return -1;
+        return NULL;
     }
 
-    return PyNode_FromArrayLike(pyn, array_like);
+    PyNode* pyn = PyNode_Create(type_obj, NULL);
+    if (!pyn){
+        return NULL;
+    }
+
+    if (PyNode_FromArrayLike(pyn, array_like) != 0){
+        PyNode_Delete(pyn);
+        return NULL;
+    }
+    
+    return (PyObject*)pyn;
 }
 
 NR_STATIC PyObject*
@@ -61,9 +69,8 @@ PyTypeObject PyNodeType = {
     .tp_name = "node",
     .tp_basicsize = sizeof(PyNode),
     .tp_dealloc = (destructor)PyNode_Delete,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_new = PyNodeType_New,
-    .tp_init = (initproc)PyNodeType_Init,
+    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,
+    .tp_new = (newfunc)PyNodeType_New,
     .tp_as_mapping = &PyNodeType_as_mapping,
     .tp_iter = (iternextfunc)PyNodeType_Iter,
     .tp_getset = PyNodeType_GetSetFuncions,
