@@ -35,7 +35,7 @@ typedef enum
     NR_SCALAR_TYPE,          // Scalar value type
 }nr_narray_type;
 
-extern const char* NR_NODE_NAME;
+extern char* NR_NODE_NAME;
 
 /* Node flags for various array properties */
 #define NR_NODE_C_ORDER 0x1      // C-style memory order
@@ -61,7 +61,9 @@ typedef struct
     void* base;              // Base array reference
     int flags;               // Array flags
 
-    char* name;              // Node name for identification
+    // Node name for identification.
+    // This is useful for inhertance and debugging.
+    const char* name;        
 }Node;
 
 /* Node access macros */
