@@ -34,11 +34,11 @@ typedef struct
 #define PYN_LONG_AS_NLONG(obj) PyLong_AsLongLong(obj)
 #define PYN_BOOL_AS_NBOOL(obj) (pyn_bool)PyLong_AsLong(obj)
 
-#define PYN_ONLY_NUM_ERR(item) \
+#define PYN_ONLY_NUM_ERR(name, item) \
     PyErr_Format(PyExc_ValueError,\
-        "PyNour node accpets only numerical type objects.",\
+        "%s accpets only numerical type objects.",\
         "got %s",\
-        (char*)Py_TYPE(item)->tp_name\
+        name ,(char*)Py_TYPE(item)->tp_name\
     )
 
 #define PYN_CANT_GETITEM \
@@ -134,19 +134,18 @@ discover_dtype(PyObject* obj){
         return PYN_LONG;
     }
     else{
-        PYN_ONLY_NUM_ERR(obj);
         return -1;
     }
 }
 
 NR_STATIC int
-discover_shape_and_dtype_recursive(PyObject *obj, _shapeAndDtype* sad, int current){
+discover_shape_and_dtype_recursive(PyTypeObject* type_obj, PyObject *obj, _shapeAndDtype* sad, int current){
     if (current >= NR_NODE_MAX_NDIM){
         PyErr_Format(
             PyExc_ValueError,
-            "maximum number of dimensions node could is %i."
-            " input object has higher then that",
-            NR_NODE_MAX_NDIM
+            "maximum number of dimensions %s could have is %i."
+            "input object has higher then that",
+            type_obj->tp_name ,NR_NODE_MAX_NDIM
         );
         return -1;
     }
@@ -162,12 +161,12 @@ discover_shape_and_dtype_recursive(PyObject *obj, _shapeAndDtype* sad, int curre
         return -1;
     }
     else if (PYN_IS_ITER(first)){
-        res = discover_shape_and_dtype_recursive(first, sad, current);
+        res = discover_shape_and_dtype_recursive(type_obj, first, sad, current);
     }
     else if (PYN_IS_NUMBER(first)){
         NR_DTYPE dtype = discover_dtype(first);
         if (dtype < 0){
-            PYN_ONLY_NUM_ERR(first);
+            PYN_ONLY_NUM_ERR(type_obj->tp_name, first);
             res = -1;
         }
         sad->dtype = dtype;
@@ -188,8 +187,8 @@ discover_shape_and_dtype_recursive(PyObject *obj, _shapeAndDtype* sad, int curre
 }
 
 NR_STATIC int
-discover_shape_and_dtype(PyObject *obj, _shapeAndDtype* sad){
-    return discover_shape_and_dtype_recursive(obj, sad, 0);
+discover_shape_and_dtype(PyTypeObject* type_obj ,PyObject *obj, _shapeAndDtype* sad){
+    return discover_shape_and_dtype_recursive(type_obj, obj, sad, 0);
 }
 
 NR_STATIC int
@@ -215,7 +214,7 @@ copy_data_from_seq2node_float_first(PyObject* obj, Node* node,
                 *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(PyNumber_Float(item));
             }
             else{
-                PYN_ONLY_NUM_ERR(item);
+                PYN_ONLY_NUM_ERR(node->name ,item);
                 Py_DECREF(item);
                 return -1;
             }
@@ -236,7 +235,7 @@ copy_data_from_seq2node_float_first(PyObject* obj, Node* node,
                 *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(PyNumber_Float(item));
             }
             else{
-                PYN_ONLY_NUM_ERR(item);
+                PYN_ONLY_NUM_ERR(node->name ,item);
                 Py_DECREF(item);
                 return -1;
             }
@@ -281,7 +280,7 @@ copy_data_from_seq2node_int_first(PyObject* obj, Node* node,
                 *(dataptr + i) = (pyn_long)PYN_BOOL_AS_NBOOL(item);
             }
             else{
-                PYN_ONLY_NUM_ERR(item);
+                PYN_ONLY_NUM_ERR(node->name ,item);
                 Py_DECREF(item);
                 return -1;
             }
@@ -314,7 +313,7 @@ copy_data_from_seq2node_int_first(PyObject* obj, Node* node,
                 *(dataptr + i) = (pyn_long)PYN_BOOL_AS_NBOOL(item);
             }
             else{
-                PYN_ONLY_NUM_ERR(item);
+                PYN_ONLY_NUM_ERR(node->name ,item);
                 Py_DECREF(item);
                 return -1;
             }
@@ -338,10 +337,7 @@ copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
         for (nr_size_t i = start; i < len; i++){
             item = PySequence_GetItem(obj, i);
             if (!item){
-                PyErr_Format(PyExc_ValueError, 
-                    "Unexpected error happend while itarting throw array items."
-                    "were not able to get the item using __getitem__."
-                );
+                PYN_CANT_GETITEM;
                 return -1;
             }
 
@@ -367,7 +363,7 @@ copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
                 return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
             }
             else{
-                PYN_ONLY_NUM_ERR(item);
+                PYN_ONLY_NUM_ERR(node->name ,item);
                 Py_DECREF(item);
                 return -1;
             }
@@ -405,7 +401,7 @@ copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
                 return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
             }
             else{
-                PYN_ONLY_NUM_ERR(item);
+                PYN_ONLY_NUM_ERR(node->name ,item);
                 Py_DECREF(item);
                 return -1;
             }
@@ -422,10 +418,9 @@ copy_data_from_seq2node(PyObject* obj, Node* node, int current, nr_size_t* idx){
     nr_size_t len = PYN_SEQ_LEN(obj);
     if (node->shape[current] != len){
         PyErr_Format(PyExc_ValueError, 
-            "array is non homogenous at dim %i, expected length %llu, magot %llu",
+            "array is non homogenous at dim %i, expected length %llu, got %llu",
             current, node->shape[current], len
         );
-    
         return -1;
     }
 
@@ -481,8 +476,7 @@ loop_throw_seq_and_copy_data_recursive(PyObject* obj, Node* node, int current, n
 NR_STATIC int
 loop_throw_seq_and_copy_data(PyObject* obj, Node* node){
     nr_size_t idx = 0;
-    int res = loop_throw_seq_and_copy_data_recursive(obj, node, 0, &idx);
-    return res;
+    return loop_throw_seq_and_copy_data_recursive(obj, node, 0, &idx);
 }
 
 NR_PUBLIC int
@@ -490,7 +484,7 @@ PyNode_FromArrayLike(PyNode* self, PyObject* array_like){
     _shapeAndDtype sad;
     int res;
 
-    res = discover_shape_and_dtype(array_like, &sad);
+    res = discover_shape_and_dtype(Py_TYPE(self), array_like, &sad);
     if (res != 0){
         return -1;
     }
@@ -499,6 +493,7 @@ PyNode_FromArrayLike(PyNode* self, PyObject* array_like){
     if (!node){
         return -1;
     }
+    node->name = (char*)Py_TYPE(self)->tp_name;
 
     res = loop_throw_seq_and_copy_data(array_like, node);
     if (res != 0){
