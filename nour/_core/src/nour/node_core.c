@@ -4,6 +4,8 @@
 #include "niter.h"
 #include "free.h"
 
+char* NR_NODE_NAME = "node";
+
 NR_PRIVATE Node*
 _Node_NewInit(int ndim, NR_DTYPE dtype){
     Node* node = malloc(sizeof(Node));
@@ -11,10 +13,16 @@ _Node_NewInit(int ndim, NR_DTYPE dtype){
         return NError_RaiseMemoryError();
     }
 
+    node->name = NR_NODE_NAME;
+
     if (ndim > NR_NODE_MAX_NDIM){
+        NError_RaiseError(
+            NError_ValueError,
+            "%s object could not have more than %i dimensions. got %i\n",
+            node->name, NR_NODE_MAX_NDIM, ndim
+        );
         free(node);
-        return NError_RaiseError(NError_ValueError, "ndim must be less then %i. got %i\n",
-                                 NR_NODE_MAX_NDIM, ndim);
+        return NULL;
     }
 
     node->ndim = ndim;
@@ -22,7 +30,6 @@ _Node_NewInit(int ndim, NR_DTYPE dtype){
     node->dtype.size = NDtype_Size(dtype);
     node->base = NULL;
     node->flags = 0;
-    node->cref = 1;
 
     return node;
 }
@@ -136,8 +143,8 @@ Node_Copy(Node* dst, const Node* src){
 
         NError_RaiseError(
             NError_ValueError,
-            "destenation node has to have the same shape as src node. got %s and %s",
-            dshp, sshp
+            "%s object has to have the same shape as src %s. got %s and %s",
+            dst->name, src->name, dshp, sshp
         );
 
         return NULL;
@@ -151,8 +158,8 @@ Node_Copy(Node* dst, const Node* src){
      
         NError_RaiseError(
             NError_ValueError,
-            "destenation and src nodes must have the same dtype. got %s and %s",
-            dt, st
+            "%s object and src %s object must have the same dtype. got %s and %s",
+            dst->name, src->name, dt, st
         );
 
         return NULL;
