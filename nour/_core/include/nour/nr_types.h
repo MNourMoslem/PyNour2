@@ -1,3 +1,31 @@
+/*
+    PyNour Basic Types System
+    ========================
+
+    Defines fundamental types and type operations used throughout PyNour.
+    This file serves as the foundation for type definitions and basic
+    operations across the library.
+
+    Key Components:
+    --------------
+    1. Basic type definitions
+    2. Size constants for each type
+    3. Type range definitions (min/max values)
+    4. Common utility macros
+    5. Basic array operations
+
+    Future Changes:
+    --------------
+    This file may be renamed to nr_common.h, with some functionality
+    being moved to specialized files. Core type definitions will remain,
+    while more specific operations may be distributed to other modules.
+
+    Usage:
+    ------
+    This header should be included in most PyNour source files as it
+    provides essential type definitions and utility macros.
+*/
+
 #ifndef NOUR__CORE_INCLUDE__NOUR_NR_TYPES_H
 #define NOUR__CORE_INCLUDE__NOUR_NR_TYPES_H
 
@@ -6,14 +34,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NR_SETFLG(x, flag) (x |= flag)
-#define NR_RMVFLG(x, flag) (x &= ~flag)
-#define NR_CHKFLG(x, flag) ((x & flag) == flag)
-#define NR_CHKUNI(x, flag) ((x & flag) != 0)
+/*Flag operation macros */
+#define NR_SETFLG(x, flag) (x |= flag)    // Set flag
+#define NR_RMVFLG(x, flag) (x &= ~flag)   // Remove flag
+#define NR_CHKFLG(x, flag) ((x & flag) == flag)  // Check if flag is set
+#define NR_CHKUNI(x, flag) ((x & flag) != 0)     // Check if any bit is set
 
-#define NR_MAX(a, b) ((a > b) ? a : b)
-#define NR_MIN(a, b) ((a < b) ? a : b)
+/* Basic comparison macros */
+#define NR_MAX(a, b) ((a > b) ? a : b)    // Maximum of two values
+#define NR_MIN(a, b) ((a < b) ? a : b)    // Minimum of two values
 
+/* Type size definitions */
 #define NR_BOOL_SIZE 1
 #define NR_INT8_SIZE 1
 #define NR_UINT8_SIZE 1
@@ -26,6 +57,7 @@
 #define NR_FLOAT32_SIZE 4
 #define NR_FLOAT64_SIZE 8
 
+/* Basic type definitions */
 typedef unsigned char nr_byte;
 typedef char nr_char;
 typedef unsigned char nr_uint8;
@@ -39,12 +71,13 @@ typedef long long nr_int64;
 typedef float nr_float32;
 typedef double nr_float64;
 
+/* Common type aliases */
 typedef nr_int32 nr_int;
 typedef nr_float32 nr_float;
 typedef nr_float64 nr_double;
-
 typedef size_t nr_size_t;
 
+/* Type range definitions */
 #define NR_MAX_INT8 127
 #define NR_MIN_INT8 -128
 #define NR_MAX_UINT8 255
@@ -62,10 +95,12 @@ typedef size_t nr_size_t;
 #define NR_MAX_UINT64 18446744073709551615ULL
 #define NR_MIN_UINT64 0
 
+/* Boolean type definition */
 typedef unsigned char nr_bool;
 #define NR_FALSE 0
 #define NR_TRUE 1
 
+/* Common array initializers */
 #define NR_32ONES  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
@@ -75,21 +110,26 @@ typedef unsigned char nr_bool;
 #define NR_32ZEROS {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
+/* Range array initializers */
 #define NR_32RANGE { 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, \
                     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31}
 
 #define NR_32RANGE1 { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, \
                      17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}
 
-#define NR_32NRANGE { 0,  -1,  -2,  -3,  -4,  -5,  -6,  -7,  -8,  -9, -10, -11, -12, -13, -14, -15, -\
-                     16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31}
+/* Negative range array initializers */
+#define NR_32NRANGE { 0,  -1,  -2,  -3,  -4,  -5,  -6,  -7,  -8,  -9, -10, -11, -12, -13, -14, -15, \
+                     -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31}
 
-#define NR_32NRANGE1 { -1,  -2,  -3,  -4,  -5,  -6,  -7,  -8,  -9, -10, -11, -12, -13, -14, -15, -16, -\
+#define NR_32NRANGE1 { -1,  -2,  -3,  -4,  -5,  -6,  -7,  -8,  -9, -10, -11, -12, -13, -14, -15, -16, \
                       -17, -18, -19, -20, -21, -22, -23, -24, -25, -26, -27, -28, -29, -30, -31, -32}
 
+/* Array fill macro */
 #define NR_32LIKE(n) {n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, \
                       n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n}
 
+
+/* 64 element array initializers */
 #define NR_64ONES  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
@@ -130,7 +170,10 @@ typedef unsigned char nr_bool;
                       n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, \
                       n, n, n, n, n, n, n, n, n, n, n, n, n, n, n, n}
 
-
+/*
+    Calculates total number of items in array.
+    Probably should be moved to another file in the future.
+*/
 NR_STATIC_INLINE nr_size_t
 NR_NItems(int ndim, const nr_size_t* shape){
     nr_size_t nitems = 1;
