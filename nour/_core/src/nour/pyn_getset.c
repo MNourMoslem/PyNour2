@@ -3,12 +3,12 @@
 #include "pyn_core.h"
 
 NR_STATIC PyObject*
-PyNodeType_Ndim(PyObject* self, char* NR_UNUSED(ignored)){
+PyNodeType_Ndim(PyObject* self, NR_UNUSED(char* ignored)){
     return PyLong_FromLongLong(PyNode_NDIM(self));
 }
 
 NR_STATIC PyObject*
-PyNodeType_Shape(PyObject* self, char* NR_UNUSED(ignored)){
+PyNodeType_Shape(PyObject* self, NR_UNUSED(char* ignored)){
     if (PyNode_NDIM(self) <= 0){
         Py_RETURN_NONE;
     }
@@ -22,7 +22,7 @@ PyNodeType_Shape(PyObject* self, char* NR_UNUSED(ignored)){
 }
 
 NR_STATIC PyObject*
-PyNodeType_Strides(PyObject* self, char* NR_UNUSED(ignored)){
+PyNodeType_Strides(PyObject* self, NR_UNUSED(char* ignored)){
     if (PyNode_NDIM(self) <= 0){
         Py_RETURN_NONE;
     }
@@ -46,5 +46,5 @@ PyGetSetDef PyNodeType_GetSetFuncions[] = {
 
     {"strides",
     (getter)PyNodeType_Strides,
-    NULL, NULL, NULL},
+    NULL, NULL, NULL}
 };
