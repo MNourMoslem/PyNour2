@@ -7,14 +7,9 @@ Node_Free(Node* node){
     if (node){
         if (node->shape) {free(node->shape);}
         if (node->strides) {free(node->strides);}
-        if (node->cref > 1){
-            node--;
+        if (NODE_IS_OWNDATA(node)){
+            free(node->data);
         }
-        else{
-            if (NODE_IS_OWNDATA(node)){
-                free(node->data);
-            }
-            free(node);
-        }
+        free(node);
     }
 }
