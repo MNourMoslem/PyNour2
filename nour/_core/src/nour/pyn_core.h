@@ -14,11 +14,12 @@ typedef struct {
 extern PyTypeObject PyNodeType;
 
 NR_PUBLIC PyNode*
-PyNode_Create(Node* node);
+PyNode_Create(PyTypeObject* type_obj, Node* node);
 
 NR_PUBLIC void
 PyNode_Delete(PyNode* self);
 
+#define PyNode_NODE(pyn) (((PyNode*)pyn)->node)
 #define PyNode_NDIM(pyn) (((PyNode*)pyn)->node->ndim)
 #define PyNode_SHAPE(pyn) (((PyNode*)pyn)->node->shape)
 #define PyNode_STRIDES(pyn) (((PyNode*)pyn)->node->strides)
@@ -28,5 +29,6 @@ PyNode_Delete(PyNode* self);
 #define PyNode_NRDTYPE(pyn) (((PyNode*)pyn)->node->dtype.dtype)
 #define PyNode_DTYPE(pyn) (((PyNode*)pyn)->node->dtype)
 #define PyNode_BASE(pyn) (((PyNode*)pyn)->node->base)
+#define PyNode_NAME(pyn) (((PyNode*)pyn)->node->name)
 
 #endif
