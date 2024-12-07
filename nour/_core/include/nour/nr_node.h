@@ -35,7 +35,7 @@ typedef enum
     NR_SCALAR_TYPE,          // Scalar value type
 }nr_narray_type;
 
-const char* NR_NODE_NAME = "node";
+extern const char* NR_NODE_NAME;
 
 /* Node flags for various array properties */
 #define NR_NODE_C_ORDER 0x1      // C-style memory order
