@@ -40,10 +40,12 @@ PyNIter_Delete(PyNIter* it) {
 }
 
 NR_STATIC PyObject*
-PyNIterType_New(PyTypeObject *type, PyObject *args, PyObject *kwargs){
+PyNIterType_New(NR_UNUSED(PyTypeObject *type), PyObject *args, PyObject *kwargs){
     PyObject* pyn;
 
-    if (!PyArg_ParseTuple(args, "O", &pyn)){
+    static char* kwlist[] = {"node", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O", kwlist, &pyn)){
         PyErr_SetString(PyExc_ValueError ,"Did not proived any pynode as input");
         return NULL;
     } 
