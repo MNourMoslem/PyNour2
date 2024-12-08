@@ -14,11 +14,9 @@ PyNode_Create(PyTypeObject* type_obj, Node* node){
 }
 
 NR_PUBLIC void
-PyNode_Delete(PyNode* self){
-    if (self->node) {
-        Node_Free(self->node);
-        self->node = NULL;
+PyNode_Delete(PyObject* self){
+    if (PyNode_NODE(self)) {
+        Node_Free(PyNode_NODE(self));
     }
-
-    Py_TYPE(self)->tp_free((PyObject*)self);
+    PyObject_Del(self);
 }
