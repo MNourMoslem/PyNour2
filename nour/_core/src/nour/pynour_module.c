@@ -24,7 +24,7 @@ PyNodeType_New(PyTypeObject *type_obj, PyObject* args, PyObject* kwargs){
     }
 
     if (PyNode_FromArrayLike(pyn, array_like) != 0){
-        PyNode_Delete(pyn);
+        PyNode_Delete((PyObject*)pyn);
         return NULL;
     }
     
