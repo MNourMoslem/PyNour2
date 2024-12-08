@@ -47,6 +47,12 @@ typedef struct
         "were not able to get the item using __getitem__."\
     )
 
+#define PYN_DIMS_NOT_HOM(current, ex_len, got_len) \
+    PyErr_Format(PyExc_ValueError,\
+        "array is non homogenous at dim %i, expected length %llu, got %llu",\
+        current, ex_len, got_len\
+    )
+
 NR_PRIVATE int
 convert_data_block_from_bool2long(Node* node, nr_size_t end){
     pyn_bool* dataptr = node->data;
@@ -191,236 +197,121 @@ discover_shape_and_dtype(PyTypeObject* type_obj ,PyObject *obj, _shapeAndDtype* 
     return discover_shape_and_dtype_recursive(type_obj, obj, sad, 0);
 }
 
+#define PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST(nr_type ,instructions) \
+    PyObject* item;                                                                       \
+    nr_size_t cidx = *idx;                                                                \
+    nr_size_t step = node->dtype.size;                                                    \
+    nr_type* dataptr = node->data + cidx * step;                                        \
+    if (PySequence_Check(obj)){                                                           \
+        for (nr_size_t i = start; i < len; i++){                                          \
+            item = PySequence_GetItem(obj, i);                                            \
+            if (!item){                                                                   \
+                PYN_CANT_GETITEM;                                                         \
+                return -1;                                                                \
+            }                                                                             \
+                                                                                          \
+            instructions                                                                  \
+        }                                                                                 \
+    }                                                                                     \
+    else{                                                                                 \
+        for (nr_size_t i = start; i < len; i++){                                          \
+            item = PyObject_GetItem(obj, PyLong_FromSize_t(i));                           \
+            if (!item){                                                                   \
+                PYN_CANT_GETITEM;                                                         \
+                return -1;                                                                \
+            }                                                                             \
+                                                                                          \
+            instructions                                                                  \
+        }                                                                                 \
+    }                                                                                     \
+    *idx = cidx + len;                                                                    \
+    return 0;
+
+
 NR_STATIC int
 copy_data_from_seq2node_float_first(PyObject* obj, Node* node,
                                     nr_size_t* idx, nr_size_t len, nr_size_t start){
-    PyObject* item;
-    nr_size_t cidx = *idx;
-    nr_size_t step = node->dtype.size;
-    pyn_float* dataptr = node->data + cidx * step;
-
-    if (PySequence_Check(obj)){
-        for (nr_size_t i = start; i < len; i++){
-            item = PySequence_GetItem(obj, i);
-            if (!item){
-                PYN_CANT_GETITEM;
-                return -1;
-            }
-
-            if (PyFloat_Check(item)){
-                *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(item); 
-            }
-            else if (PyLong_Check(item) | PyBool_Check(item)){
-                *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(PyNumber_Float(item));
-            }
-            else{
-                PYN_ONLY_NUM_ERR(node->name ,item);
-                Py_DECREF(item);
-                return -1;
-            }
-            Py_DECREF(item);
+    PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST( pyn_float,
+        if (PyFloat_Check(item)){
+            *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(item); 
         }
-    }
-    else{
-        for (nr_size_t i = start; i < len; i++){
-            item = PyObject_GetItem(obj, PyLong_FromSize_t(i));
-            if (!item){
-                PYN_CANT_GETITEM;
-                return -1;
-            }
-            if (PyFloat_Check(item)){
-                *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(item); 
-            }
-            else if (PyLong_Check(item) | PyBool_Check(item)){
-                *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(PyNumber_Float(item));
-            }
-            else{
-                PYN_ONLY_NUM_ERR(node->name ,item);
-                Py_DECREF(item);
-                return -1;
-            }
-            Py_DECREF(item);
+        else if (PyLong_Check(item) | PyBool_Check(item)){
+            *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(PyNumber_Float(item));
         }
-    }
-
-    *idx = cidx + len;
-    return 0;
+        else{
+            PYN_ONLY_NUM_ERR(node->name ,item);
+            Py_DECREF(item);
+            return -1;
+        }
+        Py_DECREF(item);
+    )
 }
 
 NR_STATIC int
 copy_data_from_seq2node_int_first(PyObject* obj, Node* node,
                                     nr_size_t* idx, nr_size_t len, nr_size_t start){
-    PyObject* item;
-    nr_size_t cidx = *idx;
-    nr_size_t step = node->dtype.size;
-    pyn_long* dataptr = node->data + cidx * step;
-
-    if (PySequence_Check(obj)){
-        for (nr_size_t i = start; i < len; i++){
-            item = PySequence_GetItem(obj, i);
-            if (!item){
-                PYN_CANT_GETITEM;
-                return -1;
-            }
-
-            if (PyLong_Check(item)){
-                *(dataptr + i) = PYN_LONG_AS_NLONG(item); 
-            }
-            else if (PyFloat_Check(item)){
-                int res = convert_data_block_from_long2float(node, cidx + i);
-                if (res != 0){
-                    Py_DECREF(item);
-                    return -1;
-                }
-
-                Py_DECREF(item);
-                return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
-            }
-            else if (PyBool_Check(item)){
-                *(dataptr + i) = (pyn_long)PYN_BOOL_AS_NBOOL(item);
-            }
-            else{
-                PYN_ONLY_NUM_ERR(node->name ,item);
-                Py_DECREF(item);
-                return -1;
-            }
-            Py_DECREF(item);
+    PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST( pyn_long,
+        if (PyLong_Check(item)){
+            *(dataptr + i) = PYN_LONG_AS_NLONG(item); 
         }
-    }
-    else{
-        for (nr_size_t i = start; i < len; i++){
-            item = PyObject_GetItem(obj, PyLong_FromSize_t(i));
-            if (!item){
-                PYN_CANT_GETITEM;
-                return -1;
-            }
-
-            if (PyLong_Check(item)){
-                *(dataptr + i) = PYN_LONG_AS_NLONG(item); 
-            }
-            else if (PyFloat_Check(item)){
-                int res = convert_data_block_from_long2float(node, cidx + i);
-                if (res != 0){
-                    Py_DECREF(item);
-                    return -1;
-                }
-
-                *idx = cidx + i;
-                Py_DECREF(item);
-                return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
-            }
-            else if (PyBool_Check(item)){
-                *(dataptr + i) = (pyn_long)PYN_BOOL_AS_NBOOL(item);
-            }
-            else{
-                PYN_ONLY_NUM_ERR(node->name ,item);
-                Py_DECREF(item);
-                return -1;
-            }
+        else if (PyFloat_Check(item)){
+            int res = convert_data_block_from_long2float(node, cidx + i);
             Py_DECREF(item);
-        }
-    }
+            if (res != 0){
+                return -1;
+            }
 
-    *idx = cidx + len;
-    return 0;
+            return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
+        }
+        else if (PyBool_Check(item)){
+            *(dataptr + i) = (pyn_long)PYN_BOOL_AS_NBOOL(item);
+        }
+        else{
+            PYN_ONLY_NUM_ERR(node->name ,item);
+            Py_DECREF(item);
+            return -1;
+        }
+        Py_DECREF(item);
+   )
 }
 
 NR_STATIC int
 copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
                                     nr_size_t* idx, nr_size_t len, nr_size_t start){
-                                            PyObject* item;
-    nr_size_t cidx = *idx;
-    nr_size_t step = node->dtype.size;
-    pyn_bool* dataptr = node->data + cidx * step;
-
-    if (PySequence_Check(obj)){
-        for (nr_size_t i = start; i < len; i++){
-            item = PySequence_GetItem(obj, i);
-            if (!item){
-                PYN_CANT_GETITEM;
-                return -1;
-            }
-
-            if (PyBool_Check(item)){
-                *(dataptr + i) = PYN_BOOL_AS_NBOOL(item); 
-            }
-            else if (PyLong_Check(item)){
-                int res = convert_data_block_from_bool2long(node, cidx + i);
-                if (res != 0){
-                    Py_DECREF(item);
-                    return -1;
-                }
-                Py_DECREF(item);
-                return copy_data_from_seq2node_int_first(obj, node, idx, len, i);
-            }
-            else if (PyFloat_Check(item)){
-                int res = convert_data_block_from_bool2float(node, cidx + i);
-                if (res != 0){
-                    Py_DECREF(item);
-                    return -1;
-                }
-                Py_DECREF(item);
-                return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
-            }
-            else{
-                PYN_ONLY_NUM_ERR(node->name ,item);
-                Py_DECREF(item);
-                return -1;
-            }
-            Py_DECREF(item);
+    PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST( pyn_bool,
+        if (PyBool_Check(item)){
+            *(dataptr + i) = PYN_BOOL_AS_NBOOL(item); 
         }
-    }
-    else{
-        for (nr_size_t i = start; i < len; i++){
-            item = PyObject_GetItem(obj, PyLong_FromSize_t(i));
-            if (!item){
-                return -1;
-            }
-
-            if (PyBool_Check(item)){
-                *(dataptr + i) = PYN_BOOL_AS_NBOOL(item); 
-            }
-            else if (PyLong_Check(item)){
-                int res = convert_data_block_from_bool2long(node, cidx + i);
-                if (res != 0){
-                    Py_DECREF(item);
-                    return -1;
-                }
-                *idx = cidx + i;
-                Py_DECREF(item);
-                return copy_data_from_seq2node_int_first(obj, node, idx, len, i);
-            }
-            else if (PyFloat_Check(item)){
-                int res = convert_data_block_from_bool2float(node, cidx + i);
-                if (res != 0){
-                    Py_DECREF(item);
-                    return -1;
-                }
-                *idx = cidx + i;
-                Py_DECREF(item);
-                return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
-            }
-            else{
-                PYN_ONLY_NUM_ERR(node->name ,item);
-                Py_DECREF(item);
-                return -1;
-            }
+        else if (PyLong_Check(item)){
             Py_DECREF(item);
+            int res = convert_data_block_from_bool2long(node, cidx + i);
+            if (res != 0){
+                return -1;
+            }
+            return copy_data_from_seq2node_int_first(obj, node, idx, len, i);
         }
-    }
-
-    *idx = cidx + len;
-    return 0;
+        else if (PyFloat_Check(item)){
+            Py_DECREF(item);
+            int res = convert_data_block_from_bool2float(node, cidx + i);
+            if (res != 0){
+                return -1;
+            }
+            return copy_data_from_seq2node_float_first(obj, node, idx, len, i);
+        }
+        else{
+            PYN_ONLY_NUM_ERR(node->name ,item);
+            Py_DECREF(item);
+            return -1;
+        }
+        Py_DECREF(item);
+    )
 }
 
 NR_STATIC int
 copy_data_from_seq2node(PyObject* obj, Node* node, int current, nr_size_t* idx){
     nr_size_t len = PYN_SEQ_LEN(obj);
     if (node->shape[current] != len){
-        PyErr_Format(PyExc_ValueError, 
-            "array is non homogenous at dim %i, expected length %llu, got %llu",
-            current, node->shape[current], len
-        );
+        PYN_DIMS_NOT_HOM(current, node->shape[current], len);
         return -1;
     }
 
@@ -450,14 +341,29 @@ loop_throw_seq_and_copy_data_recursive(PyObject* obj, Node* node, int current, n
     }
 
     if (PYN_IS_ITER(first)){
+        Py_DECREF(first);
         nr_size_t len = PYN_SEQ_LEN(obj);
         current++;
         int res;
         PyObject* item;
 
+        nr_size_t tmp;
         for (nr_size_t i = 0; i < len; i++){
             item = PYN_SEQ_GETITEM(obj, i);
+            if (!item){
+                PYN_CANT_GETITEM;
+                return -1;
+            }
+
+            tmp = PySequence_Size(item); 
+            if (tmp != node->shape[current]){
+                PYN_DIMS_NOT_HOM(current, node->shape[current], tmp);
+                Py_DECREF(item);
+                return -1;
+            }
+
             res = loop_throw_seq_and_copy_data_recursive(item, node, current, idx);
+            Py_DECREF(item);
             if (res != 0){
                 return -1;
             }
@@ -466,9 +372,16 @@ loop_throw_seq_and_copy_data_recursive(PyObject* obj, Node* node, int current, n
         return 0;
     }
     else if (PYN_IS_NUMBER(first)){
+        Py_DECREF(first);
         return copy_data_from_seq2node(obj, node, current, idx);
     }
     else{
+        PyErr_Format(PyExc_ValueError, 
+            "input object must contain either numerical(Int, Float, Bool) "
+            "or itrable objects (Tuple, Lists, ..). got %s",
+            (char*)Py_TYPE(first)->tp_name  
+        );
+        Py_DECREF(first);
         return -1;
     }
 }
