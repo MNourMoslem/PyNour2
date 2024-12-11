@@ -3,6 +3,7 @@
 #include "pyn_niter.h"
 #include "niter.h"
 #include "pyn_getset.h"
+#include "pyn_methods.h"
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
@@ -74,6 +75,7 @@ PyTypeObject PyNodeType = {
     .tp_as_mapping = &PyNodeType_as_mapping,
     .tp_iter = (iternextfunc)PyNodeType_Iter,
     .tp_getset = PyNodeType_GetSetFuncions,
+    .tp_methods = PyNodeType_Methods,
 };
 
 static PyMethodDef module_methods[] = {
