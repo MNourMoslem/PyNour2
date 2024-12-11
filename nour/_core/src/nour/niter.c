@@ -1,4 +1,5 @@
 #include "niter.h"
+#include "nerror.h"
 
 NR_PUBLIC void
 NIter_FromNode(NIter* niter, const Node* node, int iter_mode){
