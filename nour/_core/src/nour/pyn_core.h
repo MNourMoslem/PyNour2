@@ -19,6 +19,9 @@ PyNode_Create(PyTypeObject* type_obj, Node* node);
 NR_PUBLIC void
 PyNode_Delete(PyObject* self);
 
+NR_PUBLIC PyObject*
+PyNode_Copy(PyObject* dst, PyObject* src);
+
 #define PyNode_NODE(pyn) (((PyNode*)pyn)->node)
 #define PyNode_NDIM(pyn) (((PyNode*)pyn)->node->ndim)
 #define PyNode_SHAPE(pyn) (((PyNode*)pyn)->node->shape)
