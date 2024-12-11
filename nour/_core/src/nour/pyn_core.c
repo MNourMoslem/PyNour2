@@ -1,5 +1,6 @@
 #include "pyn_core.h"
 #include "node_core.h"
+#include "pyn_error.h"
 #include <stdlib.h>
 
 /**
