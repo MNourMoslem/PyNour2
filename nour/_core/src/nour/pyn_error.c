@@ -1,4 +1,5 @@
 #include "pyn_error.h"
+#include "nerror.h"
 #include "nour/nr_error.h"
 #include <Python.h>
 
