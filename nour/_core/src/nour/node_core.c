@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "node_core.h"
+#include "ntools.h"
 #include "niter.h"
 #include "free.h"
 
@@ -229,6 +230,15 @@ Node_Reshape(Node* dst, const Node* node, nr_size_t* new_shp, int new_ndim){
         return NULL;
     }
 
+    if (!node->shape){
+        NError_RaiseError(
+            NError_ValueError,
+            "cant not reshape a scalar %s",
+            node->name
+        );
+        return NULL;
+    }
+
     nr_size_t old_nitems = Node_NItems(node);
     nr_size_t new_nitems = NR_NItems(new_ndim, new_shp);
     if (new_nitems != old_nitems){
@@ -246,6 +256,7 @@ Node_Reshape(Node* dst, const Node* node, nr_size_t* new_shp, int new_ndim){
 
     if (dst->ndim <= new_ndim){
         memcpy(dst->shape, new_shp, new_ndim * sizeof(nr_size_t));
+        NTools_CalculateStrides(dst->ndim, new_shp, dst->dtype.size, dst->strides);
     }
     else{
         nr_size_t* new_shp_block = malloc(sizeof(nr_size_t) * new_ndim);
@@ -256,6 +267,15 @@ Node_Reshape(Node* dst, const Node* node, nr_size_t* new_shp, int new_ndim){
         memcpy(dst->shape, new_shp, new_ndim * sizeof(nr_size_t));
         free(dst->shape);
         dst->shape = new_shp_block;
+
+        nr_size_t* new_strides = malloc(sizeof(nr_size_t) * new_ndim);
+        if (!new_strides){
+            if (dst_copy) {Node_Free(dst);}
+            return NULL;
+        }
+        NTools_CalculateStrides(dst->ndim, new_shp, dst->dtype.size, new_strides);
+        free(dst->strides);
+        dst->strides = new_strides;
     }
 
     return dst;

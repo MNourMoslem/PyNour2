@@ -14,7 +14,4 @@ Node_NewEmpty(int ndim, nr_size_t* shape, NR_DTYPE dtype);
 NR_PUBLIC Node*
 Node_Copy(Node* dst, const Node* src);
 
-NR_PUBLIC Node*
-Node_Reshape(Node* dst, const Node* node, nr_size_t* new_shp, int new_ndim);
-
 #endif
