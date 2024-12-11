@@ -57,14 +57,16 @@ Node_Reshape(Node* node, nr_size_t* new_shp, int new_ndim) {
     } else {
         nr_size_t* new_shp_block = malloc(sizeof(nr_size_t) * new_ndim);
         if (!new_shp_block) {
-            return NError_RaiseMemoryError();
+            NError_RaiseMemoryError();
+            return -1;
         }
         memcpy(new_shp_block, new_shp, new_ndim * sizeof(nr_size_t));
 
         nr_size_t* new_strides = malloc(sizeof(nr_size_t) * new_ndim);
         if (!new_strides) {
             free(new_shp_block);
-            return NError_RaiseMemoryError();
+            NError_RaiseMemoryError();
+            return -1;
         }
         NTools_CalculateStrides(new_ndim, new_shp, node->dtype.size, new_strides);
         
@@ -129,13 +131,15 @@ Node_Squeeze(Node* node) {
     if (new_ndim != node->ndim) {
         nr_size_t* new_shape_block = malloc(sizeof(nr_size_t) * new_ndim);
         if (!new_shape_block) {
-            return NError_RaiseMemoryError();
+            NError_RaiseMemoryError();
+            return -1;
         }
         
         nr_size_t* new_strides = malloc(sizeof(nr_size_t) * new_ndim);
         if (!new_strides) {
             free(new_shape_block);
-            return NError_RaiseMemoryError();
+            NError_RaiseMemoryError();
+            return -1;
         }
 
         memcpy(new_shape_block, new_shape, new_ndim * sizeof(nr_size_t));
