@@ -2,6 +2,7 @@
 #define NOUR__CORE_SRC_NOUR_NODE_CORE_H
 
 #include "nour/nour.h"
+#include "nerror.h"
 #include "tc_methods.h"
 #include "free.h"
 
