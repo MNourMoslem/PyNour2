@@ -35,9 +35,9 @@ _Node_NewInit(int ndim, NR_DTYPE dtype){
     return node;
 }
 
-NR_PRIVATE nr_size_t
-_Node_NewInitShapeAndStrides(Node* node, nr_size_t* shape){
-    nr_size_t len = sizeof(nr_size_t) * node->ndim;
+NR_PRIVATE nr_long
+_Node_NewInitShapeAndStrides(Node* node, nr_long* shape){
+    nr_long len = sizeof(nr_long) * node->ndim;
     node->shape = malloc(len);
     if (!node->shape){
         NError_RaiseMemoryError();
@@ -52,7 +52,7 @@ _Node_NewInitShapeAndStrides(Node* node, nr_size_t* shape){
         return 0;
     }
 
-    nr_size_t nitems = 1;
+    nr_long nitems = 1;
     for (int i = node->ndim-1; i > -1; i--){
         node->strides[i] = nitems * node->dtype.size;
         nitems *= node->shape[i];
@@ -62,7 +62,7 @@ _Node_NewInitShapeAndStrides(Node* node, nr_size_t* shape){
 }
 
 NR_PRIVATE int
-_Node_NewInitAndCopyData(Node* node, void* data, nr_size_t nitems){
+_Node_NewInitAndCopyData(Node* node, void* data, nr_long nitems){
     node->data = malloc(nitems * node->dtype.size);
     if (!node->data){
         NError_RaiseMemoryError();
@@ -74,13 +74,13 @@ _Node_NewInitAndCopyData(Node* node, void* data, nr_size_t nitems){
 }
 
 NR_PUBLIC Node*
-Node_New(void* data_block, int copy_data, int ndim, nr_size_t* shape, NR_DTYPE dtype){
+Node_New(void* data_block, int copy_data, int ndim, nr_long* shape, NR_DTYPE dtype){
     Node* node = _Node_NewInit(ndim, dtype);
     if (!node){
         return NULL;
     }
 
-    nr_size_t nitems = _Node_NewInitShapeAndStrides(node, shape);
+    nr_long nitems = _Node_NewInitShapeAndStrides(node, shape);
     if (nitems == 0){
         free(node);
         return NULL;
@@ -105,13 +105,13 @@ Node_New(void* data_block, int copy_data, int ndim, nr_size_t* shape, NR_DTYPE d
 }
 
 NR_PUBLIC Node*
-Node_NewEmpty(int ndim, nr_size_t* shape, NR_DTYPE dtype){
+Node_NewEmpty(int ndim, nr_long* shape, NR_DTYPE dtype){
     Node* node = _Node_NewInit(ndim, dtype);
     if (!node){
         return NULL;
     }
 
-    nr_size_t nitems = _Node_NewInitShapeAndStrides(node, shape);
+    nr_long nitems = _Node_NewInitShapeAndStrides(node, shape);
     if(nitems == 0){
         free(node);
         return NULL;
@@ -170,17 +170,17 @@ Node_Copy(Node* dst, const Node* src){
     int scon = NODE_IS_CONTIGUOUS(src);
 
     if (dcon && scon){
-        nr_size_t nitems = Node_NItems(dst);
+        nr_long nitems = Node_NItems(dst);
         memcpy(dst->data, src->data, nitems * dst->dtype.size);
     }
     else if (dcon | scon){
         if (dcon){
-            nr_size_t bsize = dst->dtype.size;
+            nr_long bsize = dst->dtype.size;
 
             NIter it;
             NIter_FromNode(&it, src, NITER_MODE_STRIDED);
             NIter_ITER(&it);
-            nr_size_t i = 0;
+            nr_long i = 0;
             while (NIter_NOTDONE(&it))
             {
                 memcpy(dst->data + i, NIter_ITEM(&it), bsize);
@@ -189,12 +189,12 @@ Node_Copy(Node* dst, const Node* src){
             }
         }
         else{
-            nr_size_t bsize = dst->dtype.size;
+            nr_long bsize = dst->dtype.size;
 
             NIter it;
             NIter_FromNode(&it, dst, NITER_MODE_STRIDED);
             NIter_ITER(&it);
-            nr_size_t i = 0;
+            nr_long i = 0;
             while (NIter_NOTDONE(&it))
             {
                 memcpy(NIter_ITEM(&it), src->data + i, bsize);
@@ -205,7 +205,7 @@ Node_Copy(Node* dst, const Node* src){
         
     }
     else{
-        nr_size_t bsize = dst->dtype.size;
+        nr_long bsize = dst->dtype.size;
 
         NIter dit;
         NIter sit;

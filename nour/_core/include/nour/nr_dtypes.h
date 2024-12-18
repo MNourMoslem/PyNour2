@@ -57,7 +57,7 @@ typedef enum{
 typedef struct
 {
     NR_DTYPE dtype;    // The data type identifier
-    nr_size_t size;    // Size of the type in bytes
+    nr_intp size;    // Size of the type in bytes
 }NDtype;
 
 /*
@@ -66,7 +66,7 @@ typedef struct
     Stores the size in bytes for each data type.
     Used for quick size lookups.
 */
-static const nr_size_t __NR_NDTYPE_SIZES__[] = {
+static const nr_intp __NR_NDTYPE_SIZES__[] = {
     NR_BOOL_SIZE,
     NR_INT8_SIZE,
     NR_UINT8_SIZE,
@@ -89,7 +89,7 @@ static const nr_size_t __NR_NDTYPE_SIZES__[] = {
     Returns:
         Size of the data type in bytes
 */
-NR_HEADER nr_size_t
+NR_HEADER nr_intp
 NDtype_Size(NR_DTYPE dtype){
     return __NR_NDTYPE_SIZES__[dtype];
 }

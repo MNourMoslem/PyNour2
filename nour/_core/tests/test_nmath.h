@@ -226,7 +226,7 @@ static int test_nmath_6(){
     }
 
     nr_int32 arr[] = NR_32LIKE(10);
-    nr_size_t shp[] = {4, 4};
+    nr_long shp[] = {4, 4};
     int nd = 2;
     NR_DTYPE dtype = NR_INT32;
     n2 = Node_New(arr, 1, nd, shp, dtype);
@@ -275,7 +275,7 @@ static int test_nmath_7(){
     n1data[1] = 0;
 
     nr_int32 arr[] = NR_32ZEROS;
-    nr_size_t shp[] = {4, 4};
+    nr_long shp[] = {4, 4};
     int nd = 2;
     NR_DTYPE dtype = NR_INT32;
     n2 = Node_New(arr, 1, nd, shp, dtype);

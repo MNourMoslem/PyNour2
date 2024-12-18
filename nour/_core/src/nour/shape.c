@@ -20,7 +20,7 @@
  *   0 on success, -1 on error
  */
 NR_PUBLIC int
-Node_Reshape(Node* node, nr_size_t* new_shp, int new_ndim) {
+Node_Reshape(Node* node, nr_long* new_shp, int new_ndim) {
     if (new_ndim > NR_NODE_MAX_NDIM) {
         NError_RaiseError(
             NError_ValueError,
@@ -39,8 +39,8 @@ Node_Reshape(Node* node, nr_size_t* new_shp, int new_ndim) {
         return -1;
     }
 
-    nr_size_t old_nitems = Node_NItems(node);
-    nr_size_t new_nitems = NR_NItems(new_ndim, new_shp);
+    nr_long old_nitems = Node_NItems(node);
+    nr_long new_nitems = NR_NItems(new_ndim, new_shp);
     
     if (new_nitems != old_nitems) {
         NError_RaiseError(
@@ -52,17 +52,17 @@ Node_Reshape(Node* node, nr_size_t* new_shp, int new_ndim) {
     }
 
     if (node->ndim <= new_ndim) {
-        memcpy(node->shape, new_shp, new_ndim * sizeof(nr_size_t));
+        memcpy(node->shape, new_shp, new_ndim * sizeof(nr_long));
         NTools_CalculateStrides(new_ndim, new_shp, node->dtype.size, node->strides);
     } else {
-        nr_size_t* new_shp_block = malloc(sizeof(nr_size_t) * new_ndim);
+        nr_long* new_shp_block = malloc(sizeof(nr_long) * new_ndim);
         if (!new_shp_block) {
             NError_RaiseMemoryError();
             return -1;
         }
-        memcpy(new_shp_block, new_shp, new_ndim * sizeof(nr_size_t));
+        memcpy(new_shp_block, new_shp, new_ndim * sizeof(nr_long));
 
-        nr_size_t* new_strides = malloc(sizeof(nr_size_t) * new_ndim);
+        nr_long* new_strides = malloc(sizeof(nr_long) * new_ndim);
         if (!new_strides) {
             free(new_shp_block);
             NError_RaiseMemoryError();
@@ -109,7 +109,7 @@ Node_Squeeze(Node* node) {
 
     // Count new dimensions and create temporary arrays
     int new_ndim = 0;
-    nr_size_t new_shape[NR_NODE_MAX_NDIM];
+    nr_long new_shape[NR_NODE_MAX_NDIM];
     
     for (int i = 0; i < node->ndim; i++) {
         if (node->shape[i] != 1) {
@@ -129,20 +129,20 @@ Node_Squeeze(Node* node) {
 
     // Allocate new arrays if needed
     if (new_ndim != node->ndim) {
-        nr_size_t* new_shape_block = malloc(sizeof(nr_size_t) * new_ndim);
+        nr_long* new_shape_block = malloc(sizeof(nr_long) * new_ndim);
         if (!new_shape_block) {
             NError_RaiseMemoryError();
             return -1;
         }
         
-        nr_size_t* new_strides = malloc(sizeof(nr_size_t) * new_ndim);
+        nr_long* new_strides = malloc(sizeof(nr_long) * new_ndim);
         if (!new_strides) {
             free(new_shape_block);
             NError_RaiseMemoryError();
             return -1;
         }
 
-        memcpy(new_shape_block, new_shape, new_ndim * sizeof(nr_size_t));
+        memcpy(new_shape_block, new_shape, new_ndim * sizeof(nr_long));
         NTools_CalculateStrides(new_ndim, new_shape_block, node->dtype.size, new_strides);
 
         free(node->shape);
@@ -191,12 +191,12 @@ Node_Transpose(Node* node) {
         int j = node->ndim - 1 - i;
         
         // Swap shapes
-        nr_size_t temp_shape = node->shape[i];
+        nr_long temp_shape = node->shape[i];
         node->shape[i] = node->shape[j];
         node->shape[j] = temp_shape;
         
         // Swap strides
-        nr_size_t temp_stride = node->strides[i];
+        nr_long temp_stride = node->strides[i];
         node->strides[i] = node->strides[j];
         node->strides[j] = temp_stride;
     }
@@ -248,12 +248,12 @@ Node_SwapAxes(Node* node, int axis1, int axis2) {
     }
 
     // Swap shapes
-    nr_size_t temp_shape = node->shape[axis1];
+    nr_long temp_shape = node->shape[axis1];
     node->shape[axis1] = node->shape[axis2];
     node->shape[axis2] = temp_shape;
 
     // Swap strides
-    nr_size_t temp_stride = node->strides[axis1];
+    nr_long temp_stride = node->strides[axis1];
     node->strides[axis1] = node->strides[axis2];
     node->strides[axis2] = temp_stride;
 
@@ -320,12 +320,12 @@ Node_SwapAxesMulti(Node* node, const int* axes1, const int* axes2, int n_swaps) 
         }
 
         // Swap shapes
-        nr_size_t temp_shape = node->shape[axis1];
+        nr_long temp_shape = node->shape[axis1];
         node->shape[axis1] = node->shape[axis2];
         node->shape[axis2] = temp_shape;
 
         // Swap strides
-        nr_size_t temp_stride = node->strides[axis1];
+        nr_long temp_stride = node->strides[axis1];
         node->strides[axis1] = node->strides[axis2];
         node->strides[axis2] = temp_stride;
     }
@@ -369,12 +369,12 @@ Node_MatrixTranspose(Node* node) {
     }
 
     // Swap shapes
-    nr_size_t temp_shape = node->shape[0];
+    nr_long temp_shape = node->shape[0];
     node->shape[0] = node->shape[1];
     node->shape[1] = temp_shape;
 
     // Swap strides
-    nr_size_t temp_stride = node->strides[0];
+    nr_long temp_stride = node->strides[0];
     node->strides[0] = node->strides[1];
     node->strides[1] = temp_stride;
 

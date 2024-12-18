@@ -7,8 +7,8 @@
     in_type* n1_dataptr = (in_type*)n1->data;\
     in_type* n2_dataptr = (in_type*)n2->data;\
     out_type* out_dataptr = (out_type*)out->data;\
-    nr_size_t nitems = Node_NItems(out);\
-    for (nr_size_t i = 0; i < nitems; i++){\
+    nr_long nitems = Node_NItems(out);\
+    for (nr_long i = 0; i < nitems; i++){\
         *(out_type*)(out_dataptr + i) = op(*(in_type*)(n1_dataptr + i), \
                                             *(in_type*)(n2_dataptr + i));\
     }\
@@ -22,7 +22,7 @@
     in_type* n_dataptr = (in_type*)con_n->data;\
     out_type* out_dataptr = (out_type*)out->data;\
     NIter_ITER((&it));\
-    nr_size_t i = 0;\
+    nr_long i = 0;\
     while (NIter_NOTDONE((&it)))\
     {\
         *(out_type*)(out_dataptr + i) = op(*(in_type*)NIter_ITEM((&it)),\
@@ -40,7 +40,7 @@
     out_type* out_dataptr = (out_type*)out->data;\
     NIter_ITER(&it1);\
     NIter_ITER(&it2);\
-    nr_size_t i = 0;\
+    nr_long i = 0;\
     while (NIter_NOTDONE(&it1))\
     {\
         *(out_type*)(out_dataptr+i) = op(*(in_type*)NIter_ITEM(&it1),\
@@ -73,7 +73,7 @@
 #define NMATH_LOOP_SCC(op, out_type, in_type) do{\
     NIter oit;\
     NIter_FromNode(&oit, out, NITER_MODE_STRIDED);\
-    nr_size_t i = 0;\
+    nr_long i = 0;\
     while (NIter_NOTDONE(&oit))\
     {\
         *(out_type*)NIter_ITEM(&oit) = op(*(in_type*)((n1->data)+i), *(in_type*)((n2->data)+i));\
@@ -89,7 +89,7 @@
     NIter_FromNode(&nit, str_n, NITER_MODE_STRIDED);\
     NIter_FromNode(&oit, out, NITER_MODE_STRIDED);\
     in_type* n_dataptr = (in_type*)con_n->data;\
-    nr_size_t i = 0;\
+    nr_long i = 0;\
     while (NIter_NOTDONE(&oit))\
     {\
         *(out_type*)NIter_ITEM(&oit) = op(*(in_type*)(n_dataptr+i),\
@@ -103,8 +103,8 @@
 #define NMATH_LOOP_CC_S(op, out_type, in_type) do {\
     in_type* n_dataptr = (in_type*)n->data;\
     out_type* out_dataptr = (out_type*)out->data;\
-    nr_size_t nitems = Node_NItems(out);\
-    for (nr_size_t i = 0; i < nitems; i++){\
+    nr_long nitems = Node_NItems(out);\
+    for (nr_long i = 0; i < nitems; i++){\
         *(out_type*)(out_dataptr + i) = op(*(in_type*)(n_dataptr + i), sclr);\
     }\
 } while (0)
@@ -114,7 +114,7 @@
     NIter_FromNode(&nit, n, NITER_MODE_STRIDED);\
     out_type* out_dataptr = (out_type*)out->data;\
     NIter_ITER(&nit);\
-    nr_size_t i = 0;\
+    nr_long i = 0;\
     while (NIter_NOTDONE(&nit))\
     {\
         *(out_type*)(out_dataptr+i) = op(*(in_type*)NIter_ITEM(&nit), sclr);\
@@ -128,7 +128,7 @@
     NIter_FromNode(&oit, out, NITER_MODE_STRIDED);\
     in_type* n_dataptr = (in_type*)n->data;\
     NIter_ITER(&oit);\
-    nr_size_t i = 0;\
+    nr_long i = 0;\
     while (NIter_NOTDONE(&oit))\
     {\
         *(out_type*)NIter_ITEM(&oit) = op(*(in_type*)(n_dataptr+i), sclr);\

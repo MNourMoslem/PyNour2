@@ -16,7 +16,7 @@ static int test_tc_methods_##idx() {                       \
     for (int i = 0; i < 32; i++) {                           \
         arr[i] = i + 1;                                      \
     }                                                        \
-    nr_size_t shp[] = {16};                                  \
+    nr_long shp[] = {16};                                  \
     int nd = 1;                                              \
     NR_DTYPE dtype = st;                                     \
     n1 = Node_New(arr, 1, nd, shp, dtype);                   \

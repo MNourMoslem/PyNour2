@@ -5,7 +5,7 @@
 typedef struct
 {
     int ndim;
-    nr_size_t shape[NR_NODE_MAX_NDIM];
+    nr_long shape[NR_NODE_MAX_NDIM];
     NR_DTYPE dtype;
 }_shapeAndDtype;
 
@@ -54,17 +54,17 @@ typedef struct
     )
 
 NR_PRIVATE int
-convert_data_block_from_bool2long(Node* node, nr_size_t end){
+convert_data_block_from_bool2long(Node* node, nr_long end){
     pyn_bool* dataptr = node->data;
     
-    nr_size_t nitems = Node_NItems(node);
+    nr_long nitems = Node_NItems(node);
     pyn_long* new_dataptr = malloc(nitems * sizeof(pyn_long));
     if (!new_dataptr){
         PyErr_NoMemory();
         return -1;
     }
 
-    for (nr_size_t i = 0; i < end; i++){
+    for (nr_long i = 0; i < end; i++){
         *(new_dataptr + i) = (pyn_long)*(dataptr + i);
     }
 
@@ -79,17 +79,17 @@ convert_data_block_from_bool2long(Node* node, nr_size_t end){
 }
 
 NR_PRIVATE int
-convert_data_block_from_bool2float(Node* node, nr_size_t end){
+convert_data_block_from_bool2float(Node* node, nr_long end){
     pyn_bool* dataptr = node->data;
     
-    nr_size_t nitems = Node_NItems(node);
+    nr_long nitems = Node_NItems(node);
     pyn_float* new_dataptr = malloc(nitems * sizeof(pyn_float));
     if (!new_dataptr){
         PyErr_NoMemory();
         return -1;
     }
 
-    for (nr_size_t i = 0; i < end; i++){
+    for (nr_long i = 0; i < end; i++){
         *(new_dataptr + i) = (pyn_float)*(dataptr + i);
     }
 
@@ -104,17 +104,17 @@ convert_data_block_from_bool2float(Node* node, nr_size_t end){
 }
 
 NR_PRIVATE int
-convert_data_block_from_long2float(Node* node, nr_size_t end){
+convert_data_block_from_long2float(Node* node, nr_long end){
     pyn_long* dataptr = node->data;
     
-    nr_size_t nitems = Node_NItems(node);
+    nr_long nitems = Node_NItems(node);
     pyn_float* new_dataptr = malloc(nitems * sizeof(pyn_float));
     if (!new_dataptr){
         PyErr_NoMemory();
         return -1;
     }
 
-    for (nr_size_t i = 0; i < end; i++){
+    for (nr_long i = 0; i < end; i++){
         *(new_dataptr + i) = (pyn_float)*(dataptr + i);
     }
 
@@ -156,7 +156,7 @@ discover_shape_and_dtype_recursive(PyTypeObject* type_obj, PyObject *obj, _shape
         return -1;
     }
     
-    nr_size_t len = PYN_SEQ_LEN(obj);
+    nr_long len = PYN_SEQ_LEN(obj);
     sad->shape[current] = len;
     current++;
     int res; 
@@ -199,11 +199,11 @@ discover_shape_and_dtype(PyTypeObject* type_obj ,PyObject *obj, _shapeAndDtype* 
 
 #define PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST(nr_type ,instructions) \
     PyObject* item;                                                                       \
-    nr_size_t cidx = *idx;                                                                \
-    nr_size_t step = node->dtype.size;                                                    \
+    nr_long cidx = *idx;                                                                \
+    nr_long step = node->dtype.size;                                                    \
     nr_type* dataptr = node->data + cidx * step;                                        \
     if (PySequence_Check(obj)){                                                           \
-        for (nr_size_t i = start; i < len; i++){                                          \
+        for (nr_long i = start; i < len; i++){                                          \
             item = PySequence_GetItem(obj, i);                                            \
             if (!item){                                                                   \
                 PYN_CANT_GETITEM;                                                         \
@@ -214,7 +214,7 @@ discover_shape_and_dtype(PyTypeObject* type_obj ,PyObject *obj, _shapeAndDtype* 
         }                                                                                 \
     }                                                                                     \
     else{                                                                                 \
-        for (nr_size_t i = start; i < len; i++){                                          \
+        for (nr_long i = start; i < len; i++){                                          \
             item = PyObject_GetItem(obj, PyLong_FromSize_t(i));                           \
             if (!item){                                                                   \
                 PYN_CANT_GETITEM;                                                         \
@@ -230,7 +230,7 @@ discover_shape_and_dtype(PyTypeObject* type_obj ,PyObject *obj, _shapeAndDtype* 
 
 NR_STATIC int
 copy_data_from_seq2node_float_first(PyObject* obj, Node* node,
-                                    nr_size_t* idx, nr_size_t len, nr_size_t start){
+                                    nr_long* idx, nr_long len, nr_long start){
     PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST( pyn_float,
         if (PyFloat_Check(item)){
             *(dataptr + i)= PYN_FLOAT_AS_NFLOAT(item); 
@@ -249,7 +249,7 @@ copy_data_from_seq2node_float_first(PyObject* obj, Node* node,
 
 NR_STATIC int
 copy_data_from_seq2node_int_first(PyObject* obj, Node* node,
-                                    nr_size_t* idx, nr_size_t len, nr_size_t start){
+                                    nr_long* idx, nr_long len, nr_long start){
     PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST( pyn_long,
         if (PyLong_Check(item)){
             *(dataptr + i) = PYN_LONG_AS_NLONG(item); 
@@ -277,7 +277,7 @@ copy_data_from_seq2node_int_first(PyObject* obj, Node* node,
 
 NR_STATIC int
 copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
-                                    nr_size_t* idx, nr_size_t len, nr_size_t start){
+                                    nr_long* idx, nr_long len, nr_long start){
     PYN_COPY_DATA_FROM_SEQ2NODE_TYPE_FIRST( pyn_bool,
         if (PyBool_Check(item)){
             *(dataptr + i) = PYN_BOOL_AS_NBOOL(item); 
@@ -308,8 +308,8 @@ copy_data_from_seq2node_bool_first(PyObject* obj, Node* node,
 }
 
 NR_STATIC int
-copy_data_from_seq2node(PyObject* obj, Node* node, int current, nr_size_t* idx){
-    nr_size_t len = PYN_SEQ_LEN(obj);
+copy_data_from_seq2node(PyObject* obj, Node* node, int current, nr_long* idx){
+    nr_long len = PYN_SEQ_LEN(obj);
     if (node->shape[current] != len){
         PYN_DIMS_NOT_HOM(current, node->shape[current], len);
         return -1;
@@ -330,7 +330,7 @@ copy_data_from_seq2node(PyObject* obj, Node* node, int current, nr_size_t* idx){
 }
 
 NR_STATIC int
-loop_throw_seq_and_copy_data_recursive(PyObject* obj, Node* node, int current, nr_size_t* idx){
+loop_throw_seq_and_copy_data_recursive(PyObject* obj, Node* node, int current, nr_long* idx){
     PyObject* first = PYN_SEQ_GETITEM(obj, 0);
     if (!first){
         PyErr_Format(PyExc_ValueError, 
@@ -342,13 +342,13 @@ loop_throw_seq_and_copy_data_recursive(PyObject* obj, Node* node, int current, n
 
     if (PYN_IS_ITER(first)){
         Py_DECREF(first);
-        nr_size_t len = PYN_SEQ_LEN(obj);
+        nr_long len = PYN_SEQ_LEN(obj);
         current++;
         int res;
         PyObject* item;
 
-        nr_size_t tmp;
-        for (nr_size_t i = 0; i < len; i++){
+        nr_long tmp;
+        for (nr_long i = 0; i < len; i++){
             item = PYN_SEQ_GETITEM(obj, i);
             if (!item){
                 PYN_CANT_GETITEM;
@@ -388,7 +388,7 @@ loop_throw_seq_and_copy_data_recursive(PyObject* obj, Node* node, int current, n
 
 NR_STATIC int
 loop_throw_seq_and_copy_data(PyObject* obj, Node* node){
-    nr_size_t idx = 0;
+    nr_long idx = 0;
     return loop_throw_seq_and_copy_data_recursive(obj, node, 0, &idx);
 }
 

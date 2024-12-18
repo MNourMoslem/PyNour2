@@ -75,7 +75,7 @@ typedef double nr_float64;
 typedef nr_int32 nr_int;
 typedef nr_float32 nr_float;
 typedef nr_float64 nr_double;
-typedef size_t nr_size_t;
+typedef nr_int64 nr_long;
 
 /* Type range definitions */
 #define NR_MAX_INT8 127
@@ -174,9 +174,9 @@ typedef unsigned char nr_bool;
     Calculates total number of items in array.
     Probably should be moved to another file in the future.
 */
-NR_STATIC_INLINE nr_size_t
-NR_NItems(int ndim, const nr_size_t* shape){
-    nr_size_t nitems = 1;
+NR_STATIC_INLINE nr_long
+NR_NItems(int ndim, const nr_long* shape){
+    nr_long nitems = 1;
     for (int i = 0; i < ndim; i++){
         nitems *= shape[i];
     }

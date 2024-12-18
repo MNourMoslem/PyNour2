@@ -19,7 +19,7 @@ PyNodeType_Reshape(PyObject* self, PyObject* args, PyObject* kwargs) {
     }
 
     Py_ssize_t new_ndim = PyTuple_Size(shape_tuple);
-    nr_size_t new_shape[NR_NODE_MAX_NDIM];
+    nr_long new_shape[NR_NODE_MAX_NDIM];
 
     for (Py_ssize_t i = 0; i < new_ndim; i++) {
         PyObject* dim = PyTuple_GetItem(shape_tuple, i);

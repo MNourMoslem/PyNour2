@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 NR_HEADER void
-NTools_ShapeAsString(nr_size_t* shape, int ndim, char str[]) {
+NTools_ShapeAsString(nr_intp* shape, int ndim, char str[]) {
     str[0] = '(';
 
     int current = 1;

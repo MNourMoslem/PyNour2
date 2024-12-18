@@ -1,9 +1,9 @@
 #include "ntools.h"
 
 NR_PUBLIC int
-NTools_BroadcastStrides(nr_size_t* a_shape, int a_ndim,
-                        nr_size_t* a_strides, nr_size_t* src_shape,
-                        int src_ndim, nr_size_t* out_strides)
+NTools_BroadcastStrides(nr_long* a_shape, int a_ndim,
+                        nr_long* a_strides, nr_long* src_shape,
+                        int src_ndim, nr_long* out_strides)
 {
     if (src_ndim < a_ndim){
         return -1;
@@ -41,10 +41,10 @@ NTools_BroadcastDtypes(NR_DTYPE a, NR_DTYPE b){
 }
 
 NR_PUBLIC int
-NTools_CalculateStrides(int nd, const nr_size_t* shape,
-                        nr_size_t itemsize, nr_size_t* _des_strides)
+NTools_CalculateStrides(int nd, const nr_long* shape,
+                        nr_long itemsize, nr_long* _des_strides)
 {
-    nr_size_t nitems = 1;
+    nr_long nitems = 1;
     if (!shape){
         return -1;
     }

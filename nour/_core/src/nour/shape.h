@@ -8,7 +8,7 @@
  * Returns 0 on success, -1 on error.
  */
 NR_PUBLIC int
-Node_Reshape(Node* node, nr_size_t* new_shp, int new_ndim);
+Node_Reshape(Node* node, nr_long* new_shp, int new_ndim);
 
 /**
  * Removes all dimensions of size 1 from the node's shape.

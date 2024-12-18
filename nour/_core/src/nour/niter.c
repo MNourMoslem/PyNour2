@@ -17,12 +17,12 @@ NIter_FromNode(NIter* niter, const Node* node, int iter_mode){
 }
 
 NR_PUBLIC void
-NIter_New(NIter* niter ,void* data, int ndim, const nr_size_t* shape,
-          const nr_size_t* strides, int iter_mode)
+NIter_New(NIter* niter ,void* data, int ndim, const nr_long* shape,
+          const nr_long* strides, int iter_mode)
 {
     niter->data = data;
     niter->nd_m1 = ndim - 1;
-    memcpy(niter->strides, strides, sizeof(nr_size_t) * ndim);
+    memcpy(niter->strides, strides, sizeof(nr_long) * ndim);
     for (int i = 0; i < ndim; i++){
         niter->shape_m1[i] = shape[i] - 1;
         niter->backstrides[i] = strides[i] * niter->shape_m1[i];
@@ -43,7 +43,7 @@ NMultiIter_New(Node** nodes, int n_nodes, NMultiIter* mit){
     mit->out_ndim = nd;
 
     int src_node, tmp;
-    nr_size_t dim;
+    nr_long dim;
     Node* node;
     for (int i = 0; i < nd; i++){
         mit->out_shape[i] = 1;
@@ -77,7 +77,7 @@ NMultiIter_New(Node** nodes, int n_nodes, NMultiIter* mit){
         }
     }
 
-    nr_size_t tmp_str[NR_NODE_MAX_NDIM];
+    nr_long tmp_str[NR_NODE_MAX_NDIM];
     for (int i = 0; i < n_nodes; i++){
         node = nodes[i];
         tmp = NTools_BroadcastStrides(node->shape, node->ndim, node->strides, mit->out_shape, mit->out_ndim, tmp_str);
@@ -87,7 +87,7 @@ NMultiIter_New(Node** nodes, int n_nodes, NMultiIter* mit){
         }
 
         if (node->ndim == mit->out_ndim 
-            && memcmp(node->shape, mit->out_shape, node->ndim * sizeof(nr_size_t)) == 0 
+            && memcmp(node->shape, mit->out_shape, node->ndim * sizeof(nr_long)) == 0 
             && NODE_IS_CONTIGUOUS(node))
         {
             tmp = NITER_MODE_CONTIGUOUS;
@@ -109,11 +109,11 @@ NMultiIter_New(Node** nodes, int n_nodes, NMultiIter* mit){
 
 #define _SET_POINTER_TO_ONES_BLOCK(ptr) do {\
     if (NR_NODE_MAX_NDIM == 32){\
-        nr_size_t ones[] = NR_32ONES;\
+        nr_long ones[] = NR_32ONES;\
         ptr = ones;\
     }\
     else{\
-        nr_size_t ones[NR_NODE_MAX_NDIM];\
+        nr_long ones[NR_NODE_MAX_NDIM];\
         for (int i = 0; i < NR_NODE_MAX_NDIM; i++){\
             ones[i] = 1;\
         }\
@@ -123,8 +123,8 @@ NMultiIter_New(Node** nodes, int n_nodes, NMultiIter* mit){
 
 
 NR_PUBLIC int
-NWindowIter_New(const Node* node, NWindowIter* wit, const nr_size_t* window_dims,
-                const nr_size_t* strides_factor, const nr_size_t* dilation)
+NWindowIter_New(const Node* node, NWindowIter* wit, const nr_long* window_dims,
+                const nr_long* strides_factor, const nr_long* dilation)
 {
     for (int i = 0; i < node->ndim; i++){
         if (node->shape[i] < window_dims[i]){
@@ -147,10 +147,10 @@ NWindowIter_New(const Node* node, NWindowIter* wit, const nr_size_t* window_dims
     wit->end = 1;
     wit->data = node->data;
     wit->nd_m1 = node->ndim - 1;
-    memcpy(wit->strides, node->strides, sizeof(nr_size_t) * node->ndim);
+    memcpy(wit->strides, node->strides, sizeof(nr_long) * node->ndim);
 
 
-    nr_size_t wdim_len;
+    nr_long wdim_len;
     for (int i = 0; i < node->ndim; i++){
         wdim_len = dilation[i] * (window_dims[i] - 1) + 1;
         wit->shape_m1[i] = ((node->shape[i] - wdim_len) / strides_factor[i]);

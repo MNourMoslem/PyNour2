@@ -10,7 +10,7 @@
 
 static int test_node_creation_1(){
     nr_int arr[] = {1, 2, 3, 4, 5, 6};
-    nr_size_t shape[] = {2, 3};
+    nr_long shape[] = {2, 3};
     int ndim = 2;
     NR_DTYPE dtype = NR_INT32;
 
@@ -90,8 +90,8 @@ static int test_node_creation_3(){
     }
 
     nr_int32 arr[] = NR_32ONES;
-    nr_size_t shp[] = {4, 4};
-    nr_size_t nd = 2;
+    nr_long shp[] = {4, 4};
+    nr_long nd = 2;
     NR_DTYPE dt = NR_INT32;
     n2 = Node_New(arr, 1, nd, shp, dt);
     if (!n2){
@@ -139,8 +139,8 @@ static int test_node_creation_4(){
     }
 
     nr_int32 arr[] = NR_32ONES;
-    nr_size_t shp[] = {4, 4};
-    nr_size_t nd = 2;
+    nr_long shp[] = {4, 4};
+    nr_long nd = 2;
     NR_DTYPE dt = NR_INT32;
     n2 = Node_New(arr, 1, nd, shp, dt);
     if (!n2){
@@ -190,8 +190,8 @@ static int test_node_creation_5(){
     }
 
     nr_int32 arr[] = NR_32ONES;
-    nr_size_t shp[] = {4, 4};
-    nr_size_t nd = 2;
+    nr_long shp[] = {4, 4};
+    nr_long nd = 2;
     NR_DTYPE dt = NR_INT32;
     n2 = Node_New(arr, 1, nd, shp, dt);
     if (!n2){
@@ -241,8 +241,8 @@ static int test_node_creation_6(){
     }
 
     nr_int32 arr[] = NR_32ONES;
-    nr_size_t shp[] = {4, 4};
-    nr_size_t nd = 2;
+    nr_long shp[] = {4, 4};
+    nr_long nd = 2;
     NR_DTYPE dt = NR_INT32;
     n2 = Node_New(arr, 1, nd, shp, dt);
     if (!n2){
@@ -293,8 +293,8 @@ static int test_node_creation_7(){
     }
 
     nr_int8 arr[] = NR_32ONES;
-    nr_size_t shp[] = {4, 4};
-    nr_size_t nd = 2;
+    nr_long shp[] = {4, 4};
+    nr_long nd = 2;
     NR_DTYPE dt = NR_INT8;
     n2 = Node_New(arr, 1, nd, shp, dt);
     if (!n2){

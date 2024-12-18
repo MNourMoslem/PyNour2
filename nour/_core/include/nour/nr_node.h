@@ -53,8 +53,8 @@ typedef struct
 {
     void* data;              // Pointer to array data
     int ndim;                // Number of dimensions
-    nr_size_t* shape;        // Array shape
-    nr_size_t* strides;      // Array strides
+    nr_intp* shape;        // Array shape
+    nr_intp* strides;      // Array strides
 
     NDtype dtype;            // Data type information
 
@@ -94,9 +94,9 @@ typedef struct
     Returns:
         Total number of items
 */
-NR_STATIC_INLINE nr_size_t
+NR_STATIC_INLINE nr_intp
 Node_NItems(const Node* node){
-    nr_size_t nitems = 1;
+    nr_intp nitems = 1;
     for (int i = 0; i < node->ndim; i++){
         nitems *= node->shape[i];
     }
@@ -116,7 +116,7 @@ Node_NItems(const Node* node){
 NR_STATIC_INLINE int
 Node_SameShape(const Node* a, const Node* b){
     return a->ndim == b->ndim 
-            && memcmp(a->shape, b->shape, sizeof(nr_size_t) * a->ndim) == 0;
+            && memcmp(a->shape, b->shape, sizeof(nr_intp) * a->ndim) == 0;
 }
 
 /* Function type for node-to-node operations */

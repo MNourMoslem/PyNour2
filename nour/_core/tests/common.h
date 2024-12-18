@@ -110,7 +110,7 @@ NTEST_TAIL
 #define _NEW_NODE_CUSTOM(node_ptr, type, arr, shape, ndim, nr_dtype) \
     do {                                                             \
         type __arr[] = arr;                                          \
-        nr_size_t __shape[] = shape;                                 \
+        nr_long __shape[] = shape;                                 \
         int __ndim = ndim;                                           \
         NR_DTYPE __dtype = nr_dtype;                                 \
         node_ptr = Node_New(__arr, 1, __ndim, __shape, __dtype);     \

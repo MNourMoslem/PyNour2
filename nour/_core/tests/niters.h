@@ -90,9 +90,9 @@
  
 NR_STATIC int test_niters_1() {
     nr_int arr1[] = {1, 2, 3, 4, 5, 6};
-    nr_size_t shape1[] = {2, 3};
+    nr_long shape1[] = {2, 3};
     nr_int arr2[] = {5, 3};
-    nr_size_t shape2[] = {2, 1};
+    nr_long shape2[] = {2, 1};
     NR_DTYPE dtype = NR_INT32;
 
     Node* node1;
@@ -113,9 +113,9 @@ NR_STATIC int test_niters_1() {
 
 NR_STATIC int test_niters_2() {
     nr_int arr1[] = {5, 5, 5, 3, 3, 3};
-    nr_size_t shape1[] = {2, 3};
+    nr_long shape1[] = {2, 3};
     nr_int arr2[] = {5, 3};
-    nr_size_t shape2[] = {2, 1};
+    nr_long shape2[] = {2, 1};
     NR_DTYPE dtype = NR_INT32;
 
     Node* node1;
@@ -140,8 +140,8 @@ NR_STATIC int test_niters_2() {
 
 NR_STATIC int test_niters_3() {
     nr_int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    nr_size_t shape[] = {4, 4};
-    nr_size_t window_dims[] = {2, 2};
+    nr_long shape[] = {4, 4};
+    nr_long window_dims[] = {2, 2};
     NR_DTYPE dtype = NR_INT32;
 
     nr_int* reswin[] = {
@@ -165,9 +165,9 @@ NR_STATIC int test_niters_3() {
 
 NR_STATIC int test_niters_4(){
     nr_int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    nr_size_t shape[] = {4, 4};
-    nr_size_t window_dims[] = {2, 2};
-    nr_size_t strides_factor[] = {2, 2};
+    nr_long shape[] = {4, 4};
+    nr_long window_dims[] = {2, 2};
+    nr_long strides_factor[] = {2, 2};
     int ndim1 = 2;
 
     NR_DTYPE dtype = NR_INT32;
@@ -207,9 +207,9 @@ NR_STATIC int test_niters_5(){
         return -1;
     }
 
-    nr_size_t window_dims[] = {2, 2};
-    nr_size_t strides_factor[] = {1, 1};
-    nr_size_t dilation[] = {2, 2};
+    nr_long window_dims[] = {2, 2};
+    nr_long strides_factor[] = {1, 1};
+    nr_long dilation[] = {2, 2};
 
     NWindowIter wit;
     NWindowIter* pwit = &wit;

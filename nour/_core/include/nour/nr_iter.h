@@ -81,14 +81,14 @@ typedef struct NIter
 {
     void* data;                                  // pointer to the data
     int nd_m1;                                   // number of dimensions - 1
-    nr_size_t shape_m1[NR_NODE_MAX_NDIM];        // shape - 1
-    nr_size_t strides[NR_NODE_MAX_NDIM];         // strides
-    nr_size_t backstrides[NR_NODE_MAX_NDIM];     // backstrides
+    nr_long shape_m1[NR_NODE_MAX_NDIM];        // shape - 1
+    nr_long strides[NR_NODE_MAX_NDIM];         // strides
+    nr_long backstrides[NR_NODE_MAX_NDIM];     // backstrides
     void* current;                               // current position
-    nr_size_t coords[NR_NODE_MAX_NDIM];          // coordinates
+    nr_long coords[NR_NODE_MAX_NDIM];          // coordinates
     int idx;                                     // current index
     int end;                                     // end index
-    nr_size_t step;                              // step size
+    nr_long step;                              // step size
     int iter_mode;                               // iterator mode
 }NIter;
 
@@ -100,7 +100,7 @@ typedef struct NIter
             break;\
         }\
         memset((iter_ptr)->coords, 0, \
-               ((iter_ptr)->nd_m1 + 1)*sizeof(nr_size_t)); \
+               ((iter_ptr)->nd_m1 + 1)*sizeof(nr_long)); \
 } while (0)
 
 // Next iterator for contiguous data
@@ -151,7 +151,7 @@ typedef struct
     NIter iters[NR_MULTIITER_MAX_NITER];            // array of iterators
     int n_iter;                                     // number of iterators    
 
-    nr_size_t out_shape[NR_NODE_MAX_NDIM];          // output shape
+    nr_long out_shape[NR_NODE_MAX_NDIM];          // output shape
     int out_ndim;                                   // output number of dimensions
 
     int idx;                                        // current index
@@ -226,25 +226,25 @@ typedef struct
 {
     void* data;                                  // pointer to the data 
     int nd_m1;                                   // number of dimensions - 1
-    nr_size_t shape_m1[NR_NODE_MAX_NDIM];        // shape - 1
-    nr_size_t strides[NR_NODE_MAX_NDIM];         // strides
-    nr_size_t backstrides[NR_NODE_MAX_NDIM];     // backstrides
-    nr_size_t coords[NR_NODE_MAX_NDIM];          // coordinates
+    nr_long shape_m1[NR_NODE_MAX_NDIM];        // shape - 1
+    nr_long strides[NR_NODE_MAX_NDIM];         // strides
+    nr_long backstrides[NR_NODE_MAX_NDIM];     // backstrides
+    nr_long coords[NR_NODE_MAX_NDIM];          // coordinates
     void* current;                               // current position
     int idx;                                     // current index
     int end;                                     // end index
     int iter_mode;                               // iterator mode
-    nr_size_t step;                              // step size
-    nr_size_t bounds[NR_NODE_MAX_NDIM];          // bounds
+    nr_long step;                              // step size
+    nr_long bounds[NR_NODE_MAX_NDIM];          // bounds
 
     int widx;                                     // current index
     int wend;                                     // end index
-    nr_size_t wstep;                              // step size
+    nr_long wstep;                              // step size
     void *wcurrent;                               // current position
-    nr_size_t wshape_m1[NR_NODE_MAX_NDIM];        // window shape - 1
-    nr_size_t wstrides[NR_NODE_MAX_NDIM];         // window strides
-    nr_size_t wbackstrides[NR_NODE_MAX_NDIM];     // window backstrides
-    nr_size_t wcoords[NR_NODE_MAX_NDIM];          // window coordinates
+    nr_long wshape_m1[NR_NODE_MAX_NDIM];        // window shape - 1
+    nr_long wstrides[NR_NODE_MAX_NDIM];         // window strides
+    nr_long wbackstrides[NR_NODE_MAX_NDIM];     // window backstrides
+    nr_long wcoords[NR_NODE_MAX_NDIM];          // window coordinates
     int wmode;                                    // window mode
 }NWindowIter;
 
@@ -268,7 +268,7 @@ typedef struct
         break;\
     }\
     memset((witer_ptr)->wcoords, 0, \
-            ((witer_ptr)->nd_m1 + 1)*sizeof(nr_size_t)); \
+            ((witer_ptr)->nd_m1 + 1)*sizeof(nr_long)); \
 } while (0)
 
 // Next iterator for contiguous data
